@@ -32,6 +32,21 @@ export const curriculumCategories: TopicCategory[] = [
     ],
   },
   {
+    id: 'react-internals',
+    title: 'React Core Internals',
+    description: 'Thuật toán điều phối ngầm (Fiber Reconciliation) và vòng đời Hook',
+    topics: [
+      {
+        id: 'fiber-tree',
+        title: 'React Fiber & Reconciliation',
+        subtitle: 'Dual Buffering, Hooks Linked List & Diffing Heuristics',
+        level: 'Senior',
+        isReady: true,
+        badge: 'Cốt lõi',
+      },
+    ],
+  },
+  {
     id: 'perf-vitals',
     title: 'Performance & Core Web Vitals',
     description: 'Tối ưu hóa tốc độ tải trang, Main Thread và trải nghiệm tương tác mượt mà',
@@ -102,20 +117,6 @@ export const curriculumCategories: TopicCategory[] = [
         level: 'Senior',
         isReady: false,
         badge: 'Chất lượng',
-      },
-    ],
-  },
-  {
-    id: 'react-internals',
-    title: 'React Core Internals',
-    description: 'Thuật toán điều phối ngầm (Fiber Reconciliation) và vòng đời Hook',
-    topics: [
-      {
-        id: 'fiber-tree',
-        title: 'React Fiber & Diffing',
-        subtitle: 'Current vs WorkInProgress tree, Render vs Commit Phase',
-        level: 'Senior',
-        isReady: false,
       },
     ],
   },

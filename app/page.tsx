@@ -8,6 +8,8 @@ import { EventLoopDiagramStage } from '@/components/visualizer/EventLoopDiagramS
 import { TaskCheatsheet } from '@/components/visualizer/TaskCheatsheet';
 import { ClosureStage } from '@/components/visualizer/closures/ClosureStage';
 import { ClosureCheatsheet } from '@/components/visualizer/closures/ClosureCheatsheet';
+import { ReactFiberStage } from '@/components/visualizer/react/ReactFiberStage';
+import { ReactCheatsheet } from '@/components/visualizer/react/ReactCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
@@ -15,6 +17,7 @@ import { PredictModal } from '@/components/visualizer/PredictModal';
 import { TopicRoadmapView } from '@/components/visualizer/TopicRoadmapView';
 import { eventLoopScenarios } from '@/lib/scenarios/event-loop-data';
 import { closureScenarios } from '@/lib/scenarios/closure-data';
+import { reactFiberScenarios } from '@/lib/scenarios/react-fiber-data';
 import { TopicId } from '@/lib/types';
 
 export default function Home() {
@@ -28,8 +31,15 @@ export default function Home() {
   const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
 
   // Active Scenarios based on topic
+  const isFiberTopic = currentTopic === 'fiber-tree';
   const isClosuresTopic = currentTopic === 'closures';
-  const activeScenarios = isClosuresTopic ? closureScenarios : eventLoopScenarios;
+  
+  const activeScenarios = isFiberTopic
+    ? reactFiberScenarios
+    : isClosuresTopic
+    ? closureScenarios
+    : eventLoopScenarios;
+
   const scenario = activeScenarios[selectedScenarioIndex] || activeScenarios[0];
   const totalSteps = scenario.steps.length;
   const currentStep = scenario.steps[currentStepIndex] || scenario.steps[0];
@@ -96,7 +106,8 @@ export default function Home() {
     }
   };
 
-  const isInteractiveTopicReady = currentTopic === 'event-loop' || currentTopic === 'closures';
+  const isInteractiveTopicReady =
+    currentTopic === 'event-loop' || currentTopic === 'closures' || currentTopic === 'fiber-tree';
 
   return (
     <div className="h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
@@ -107,6 +118,18 @@ export default function Home() {
         isSidebarOpen={isSidebarOpen}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         activeTopicTitle={scenario.title}
+        cheatsheetLabel={
+          isFiberTopic
+            ? 'Sổ tay React Fiber'
+            : isClosuresTopic
+            ? 'Sổ tay Closures'
+            : 'Sổ tay Micro / Macrotask'
+        }
+        runtimeBadge={
+          isFiberTopic
+            ? 'React 19 Reconciler'
+            : 'V8 Runtime'
+        }
       />
 
       <div className="flex-1 flex overflow-hidden">
@@ -138,10 +161,16 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-2">
                 <div>
                   <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[var(--foreground)] tracking-tight">
-                    {isClosuresTopic ? 'Closures & Scope Chain' : 'Microtask vs Macrotask'}
+                    {isFiberTopic
+                      ? 'React Fiber & Reconciliation'
+                      : isClosuresTopic
+                      ? 'Closures & Scope Chain'
+                      : 'Microtask vs Macrotask'}
                   </h1>
                   <p className="text-[17px] text-[var(--muted)] mt-1.5 leading-relaxed">
-                    {isClosuresTopic
+                    {isFiberTopic
+                      ? 'Tài liệu cô đọng: Kiến trúc Fiber Dual Buffering, thuật toán Diffing và quy tắc Hooks.'
+                      : isClosuresTopic
                       ? 'Tài liệu cô đọng: Cơ chế bộ nhớ Heap, Scope Chain và các bẫy phỏng vấn Closures.'
                       : 'Tài liệu cô đọng để ôn phỏng vấn Front-End: Event Loop chạy việc nào trước, việc nào sau.'}
                   </p>
@@ -156,7 +185,13 @@ export default function Home() {
               </div>
 
               {/* Render corresponding Cheatsheet */}
-              {isClosuresTopic ? <ClosureCheatsheet /> : <TaskCheatsheet />}
+              {isFiberTopic ? (
+                <ReactCheatsheet />
+              ) : isClosuresTopic ? (
+                <ClosureCheatsheet />
+              ) : (
+                <TaskCheatsheet />
+              )}
             </div>
           ) : (
             /* 100% SINGLE-VIEWPORT WORKBENCH (No page scroll needed!) */
@@ -203,7 +238,11 @@ export default function Home() {
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
-                    scenarioTitle={`scenario-${selectedScenarioIndex + 1}.js`}
+                    scenarioTitle={
+                      isFiberTopic
+                        ? `counter-app-${selectedScenarioIndex + 1}.tsx`
+                        : `scenario-${selectedScenarioIndex + 1}.js`
+                    }
                     className="flex-[3] min-h-[180px]"
                   />
 
@@ -230,7 +269,12 @@ export default function Home() {
                   />
 
                   {/* Render Visual Stage according to Topic */}
-                  {isClosuresTopic ? (
+                  {isFiberTopic ? (
+                    <ReactFiberStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isClosuresTopic ? (
                     <ClosureStage
                       state={currentStep.state as any}
                       className="flex-1 min-h-0"

@@ -9,6 +9,8 @@ interface HeaderProps {
   isSidebarOpen: boolean;
   onToggleSidebar: () => void;
   activeTopicTitle?: string;
+  cheatsheetLabel?: string;
+  runtimeBadge?: string;
 }
 
 export function Header({
@@ -16,6 +18,8 @@ export function Header({
   onSelectView,
   isSidebarOpen,
   onToggleSidebar,
+  cheatsheetLabel = 'Sổ tay kiến thức',
+  runtimeBadge = 'V8 Runtime',
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[var(--border)] bg-[var(--background)] px-4 sm:px-6 py-3 flex items-center justify-between shrink-0">
@@ -68,14 +72,14 @@ export function Header({
               : 'text-[var(--muted)] hover:text-[var(--foreground)]'
           }`}
         >
-          Sổ tay Micro / Macrotask
+          {cheatsheetLabel}
         </button>
       </div>
 
       {/* Right runtime badge */}
       <div className="flex items-center gap-2 text-[13px] text-[var(--foreground)]">
-        <span className="w-2 h-2 rounded-full bg-emerald-500" />
-        <span className="font-medium">V8 Runtime</span>
+        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="font-medium font-mono">{runtimeBadge}</span>
       </div>
     </header>
   );
