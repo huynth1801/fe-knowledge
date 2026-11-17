@@ -41,7 +41,7 @@ export function SimulationPlayer({
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         {/* Controls */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
           <button
             onClick={onReset}
             title="Quay lại đầu"
@@ -61,7 +61,7 @@ export function SimulationPlayer({
 
           <button
             onClick={onPlayToggle}
-            className={`px-3.5 py-1.5 rounded-lg text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
+            className={`px-3 sm:px-3.5 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs shrink-0 ${
               isPlaying
                 ? 'bg-amber-600 hover:bg-amber-700 text-white'
                 : 'bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white'
@@ -90,7 +90,7 @@ export function SimulationPlayer({
           </button>
 
           {/* Speed Pills */}
-          <div className="flex items-center ml-2 p-0.5 rounded-lg bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[11px] font-mono">
+          <div className="flex items-center ml-1 sm:ml-2 p-0.5 rounded-lg bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[11px] font-mono shrink-0">
             {[0.5, 1, 1.5, 2].map((speed) => (
               <button
                 key={speed}
@@ -108,7 +108,7 @@ export function SimulationPlayer({
         </div>
 
         {/* Step indicator & Quiz */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-1 sm:pt-0 border-t sm:border-t-0 border-[var(--border)]">
           {onOpenPredictModal && (
             <button
               onClick={onOpenPredictModal}

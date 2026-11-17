@@ -129,7 +129,7 @@ function InteractiveStackDemo() {
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 space-y-4 shadow-2xs">
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-[var(--border)]">
         <span className="font-mono text-xs font-bold text-[var(--text)]">
           Call Stack Execution Frame Inspector
         </span>
@@ -322,7 +322,7 @@ function InteractiveHeatmapDemo() {
 
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 space-y-4 shadow-2xs">
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-[var(--border)]">
         <div>
           <span className="font-mono text-xs font-bold text-[var(--text)]">
             Review Activity & Mastery Heatmap
@@ -331,7 +331,7 @@ function InteractiveHeatmapDemo() {
             112 concepts mapped across active retention intervals
           </p>
         </div>
-        <span className="text-xs font-mono px-2 py-0.5 rounded bg-[var(--accent-subtle)] text-[var(--accent)] font-semibold">
+        <span className="text-xs font-mono px-2 py-0.5 rounded bg-[var(--accent-subtle)] text-[var(--accent)] font-semibold self-start sm:self-auto">
           84% Retention
         </span>
       </div>
@@ -364,7 +364,7 @@ function InteractiveHeatmapDemo() {
       </div>
 
       {/* Tooltip detail info */}
-      <div className="p-3 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border)] flex items-center justify-between font-mono text-xs">
+      <div className="p-3 rounded-lg bg-[var(--bg-subtle)] border border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-1 font-mono text-xs">
         <div>
           <span className="text-[var(--text-muted)]">Selected Session #{selectedDay.day}: </span>
           <span className="font-bold text-[var(--text)]">{selectedDay.topic}</span>

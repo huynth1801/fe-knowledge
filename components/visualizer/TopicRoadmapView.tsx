@@ -260,28 +260,28 @@ export function TopicRoadmapView({ topicId, onBackToEventLoop }: TopicRoadmapVie
 
   return (
     <div className="space-y-6 animate-in fade-in">
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border)]">
         <button
           onClick={onBackToEventLoop}
-          className="flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] hover:underline cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-medium text-[var(--accent)] hover:underline cursor-pointer self-start sm:self-auto"
         >
           <ArrowLeft className="w-4 h-4" /> Quay lại Event Loop Visualizer
         </button>
-        <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-semibold">
+        <span className="text-[11px] sm:text-xs font-mono px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-300 font-semibold self-start sm:self-auto">
           🚀 Đang mở rộng nội dung (Senior / Lead Scope)
         </span>
       </div>
 
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-6 shadow-xs">
-        <div className="flex items-start gap-4">
-          <div className="p-3.5 rounded-xl bg-[var(--card-subtle)] border border-[var(--border)] shrink-0">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-6 md:p-8 space-y-6 shadow-xs">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="p-3 rounded-xl bg-[var(--card-subtle)] border border-[var(--border)] shrink-0">
             {info.icon}
           </div>
           <div>
             <span className="text-xs font-mono uppercase text-[var(--muted)] font-semibold">
               Kế hoạch trực quan hoá chuyên sâu
             </span>
-            <h2 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--foreground)] mt-0.5">
+            <h2 className="font-serif font-bold text-xl sm:text-2xl md:text-3xl text-[var(--foreground)] mt-0.5">
               {info.title}
             </h2>
             <p className="text-xs sm:text-sm text-[var(--muted)] font-mono mt-0.5">

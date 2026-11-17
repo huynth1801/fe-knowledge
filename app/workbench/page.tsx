@@ -224,10 +224,10 @@ function WorkbenchContent() {
 
         {/* Main Content Area */}
         <main
-          className={`flex-1 overflow-hidden transition-all duration-200 ${
+          className={`flex-1 transition-all duration-200 ${
             activeView === 'cheatsheet' || !hasSimulation || !isInteractiveTopicReady
               ? 'overflow-y-auto p-4 sm:p-6 md:p-8 bg-white'
-              : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-53px)] bg-[#FAF8F5]'
+              : 'p-2.5 sm:p-4 flex flex-col gap-2.5 h-auto lg:h-[calc(100vh-53px)] overflow-y-auto lg:overflow-hidden bg-[#FAF8F5]'
           }`}
         >
           {!isInteractiveTopicReady ? (
@@ -279,28 +279,28 @@ function WorkbenchContent() {
             /* 100% SINGLE-VIEWPORT WORKBENCH (Chỉ dành cho các chủ đề ĐÁNG VISUALIZE) */
             <div className="flex-1 flex flex-col gap-2.5 min-h-0 w-full animate-in fade-in">
               {/* Top Compact Scenario Selection Bar */}
-              <div className="flex items-center justify-between gap-3 shrink-0 pb-1 border-b border-zinc-200">
-                <div className="flex items-center gap-2.5">
-                  <h1 className="font-serif font-bold text-[18px] text-zinc-900 tracking-tight">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 pb-1.5 border-b border-zinc-200">
+                <div className="flex items-center gap-2 min-w-0">
+                  <h1 className="font-serif font-bold text-[16px] sm:text-[18px] text-zinc-900 tracking-tight truncate">
                     {scenario.title}
                   </h1>
-                  <span className="px-2 py-0.2 rounded-full bg-orange-50 text-[#CC6745] border border-orange-200 font-semibold text-[11px] font-mono">
+                  <span className="px-2 py-0.2 rounded-full bg-orange-50 text-[#CC6745] border border-orange-200 font-semibold text-[10px] sm:text-[11px] font-mono shrink-0">
                     {scenario.difficulty}
                   </span>
-                  <span className="text-[13px] text-zinc-500 hidden md:inline">
+                  <span className="text-[13px] text-zinc-500 hidden md:inline truncate">
                     • {scenario.tagline}
                   </span>
                 </div>
 
                 {/* Scenario tabs */}
-                <div className="flex items-center gap-1 p-0.5 rounded-xl bg-zinc-100 border border-zinc-200 text-[13px]">
+                <div className="flex items-center gap-1 p-0.5 rounded-xl bg-zinc-100 border border-zinc-200 text-[12px] sm:text-[13px] overflow-x-auto max-w-full shrink-0">
                   {activeScenarios.map((sc, idx) => {
                     const isActive = idx === selectedScenarioIndex;
                     return (
                       <button
                         key={sc.id}
                         onClick={() => handleSelectScenario(idx)}
-                        className={`px-2.5 py-0.5 rounded-lg transition-all cursor-pointer font-mono text-[12px] ${
+                        className={`px-2.5 py-0.5 rounded-lg transition-all cursor-pointer font-mono text-[11px] sm:text-[12px] shrink-0 ${
                           isActive
                             ? 'bg-white text-[#CC6745] font-bold shadow-2xs border border-zinc-200'
                             : 'text-zinc-600 hover:text-zinc-900'
@@ -313,10 +313,83 @@ function WorkbenchContent() {
                 </div>
               </div>
 
-              {/* 2-Column Grid filling remaining height */}
-              <div className="flex-1 min-h-0 grid grid-cols-12 gap-3.5 items-stretch">
-                {/* Left Column: Code (Top) + Live Console Terminal (Bottom) */}
-                <div className="col-span-12 lg:col-span-5 flex flex-col gap-3 min-h-0 h-full">
+              {/* 2-Column Grid (Responsive: Mobile stacked with Player/Stage first, Desktop side-by-side) */}
+              <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-12 gap-3.5 items-stretch">
+                {/* Stage + Player Column (Top on Mobile, Right on Desktop) */}
+                <div className="w-full lg:col-span-7 flex flex-col gap-3 min-h-0 h-auto lg:h-full order-1 lg:order-2">
+                  <SimulationPlayer
+                    currentStep={currentStepIndex}
+                    totalSteps={totalSteps}
+                    isPlaying={isPlaying}
+                    playbackSpeed={playbackSpeed}
+                    onPlayToggle={handlePlayToggle}
+                    onStepNext={handleStepNext}
+                    onStepPrev={handleStepPrev}
+                    onReset={handleReset}
+                    onSelectStep={handleSelectStep}
+                    onChangeSpeed={(spd) => setPlaybackSpeed(spd)}
+                    onOpenPredictModal={() => setIsPredictModalOpen(true)}
+                  />
+
+                  {/* Render Visual Stage according to Topic */}
+                  {isRealtimeTopic ? (
+                    <WebSocketStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  ) : isVitalsTopic ? (
+                    <WebVitalsStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  ) : isCssTopic ? (
+                    <StackingContextStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  ) : isNextTopic ? (
+                    <NextRenderingStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  ) : isFiberTopic ? (
+                    <ReactFiberStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  ) : isRerenderTopic ? (
+                    <ReactRerenderStage
+                      currentStep={currentStep as any}
+                      scenarioIndex={selectedScenarioIndex}
+                    />
+                  ) : isPrototypeTopic ? (
+                    <PrototypeStage
+                      currentStep={currentStep as any}
+                      scenarioIndex={selectedScenarioIndex}
+                    />
+                  ) : isClosuresTopic ? (
+                    <ClosureStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  ) : (
+                    <EventLoopDiagramStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-[260px] lg:min-h-0"
+                    />
+                  )}
+
+                  <ExplanationPanel
+                    stepIndex={currentStepIndex}
+                    totalSteps={totalSteps}
+                    title={currentStep.title}
+                    explanation={currentStep.explanation}
+                    interviewInsight={currentStep.interviewInsight}
+                  />
+                </div>
+
+                {/* Code + Console Column (Bottom on Mobile, Left on Desktop) */}
+                <div className="w-full lg:col-span-5 flex flex-col gap-3 min-h-0 h-auto lg:h-full order-2 lg:order-1">
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
@@ -337,85 +410,12 @@ function WorkbenchContent() {
                         ? `counter-app-${selectedScenarioIndex + 1}.tsx`
                         : `scenario-${selectedScenarioIndex + 1}.js`
                     }
-                    className="flex-[3] min-h-[180px]"
+                    className="min-h-[200px] lg:min-h-[180px] lg:flex-[3]"
                   />
 
                   <ConsoleCard
                     logs={currentStep.state.consoleLogs}
-                    className="flex-[2] min-h-[140px]"
-                  />
-                </div>
-
-                {/* Right Column: Player + Stage + Explanation Panel */}
-                <div className="col-span-12 lg:col-span-7 flex flex-col gap-3 min-h-0 h-full">
-                  <SimulationPlayer
-                    currentStep={currentStepIndex}
-                    totalSteps={totalSteps}
-                    isPlaying={isPlaying}
-                    playbackSpeed={playbackSpeed}
-                    onPlayToggle={handlePlayToggle}
-                    onStepNext={handleStepNext}
-                    onStepPrev={handleStepPrev}
-                    onReset={handleReset}
-                    onSelectStep={handleSelectStep}
-                    onChangeSpeed={(spd) => setPlaybackSpeed(spd)}
-                    onOpenPredictModal={() => setIsPredictModalOpen(true)}
-                  />
-
-                  {/* Render Visual Stage according to Topic (CHỈ CÁC CHỦ ĐỀ ĐÁNG VISUALIZE) */}
-                  {isRealtimeTopic ? (
-                    <WebSocketStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isVitalsTopic ? (
-                    <WebVitalsStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isCssTopic ? (
-                    <StackingContextStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isNextTopic ? (
-                    <NextRenderingStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isFiberTopic ? (
-                    <ReactFiberStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isRerenderTopic ? (
-                    <ReactRerenderStage
-                      currentStep={currentStep as any}
-                      scenarioIndex={selectedScenarioIndex}
-                    />
-                  ) : isPrototypeTopic ? (
-                    <PrototypeStage
-                      currentStep={currentStep as any}
-                      scenarioIndex={selectedScenarioIndex}
-                    />
-                  ) : isClosuresTopic ? (
-                    <ClosureStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : (
-                    <EventLoopDiagramStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  )}
-
-                  <ExplanationPanel
-                    stepIndex={currentStepIndex}
-                    totalSteps={totalSteps}
-                    title={currentStep.title}
-                    explanation={currentStep.explanation}
-                    interviewInsight={currentStep.interviewInsight}
+                    className="min-h-[140px] lg:min-h-[140px] lg:flex-[2]"
                   />
                 </div>
               </div>

@@ -35,15 +35,15 @@ export function ExplanationPanel({
       </div>
 
       {/* Main thought */}
-      <p className="text-[14px] leading-relaxed text-[var(--foreground)] opacity-90 line-clamp-2">
+      <p className="text-[13px] sm:text-[14px] leading-relaxed text-[var(--foreground)] opacity-90">
         {explanation}
       </p>
 
       {/* Interview Insight Callout */}
       {interviewInsight && (
-        <div className="rounded-xl bg-[var(--accent-light)]/50 border border-[var(--accent-border)] px-3 py-1.5 text-[13px] flex items-start gap-2">
+        <div className="rounded-xl bg-[var(--accent-light)]/50 border border-[var(--accent-border)] px-3 py-1.5 text-[12px] sm:text-[13px] flex items-start gap-2">
           <Lightbulb className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
-          <p className="text-[13px] text-[var(--foreground)] leading-snug line-clamp-2">
+          <p className="text-[12px] sm:text-[13px] text-[var(--foreground)] leading-snug">
             <strong className="font-serif font-bold text-[var(--accent)]">Tip phỏng vấn: </strong>
             {interviewInsight}
           </p>

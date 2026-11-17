@@ -133,60 +133,87 @@ export function TopicsListSection() {
             {topicsData.map((topic) => {
               const isActive = activeTopic.id === topic.id;
               return (
-                <div
-                  key={topic.id}
-                  onMouseEnter={() => setActiveTopic(topic)}
-                  onClick={() => setActiveTopic(topic)}
-                  className={`group py-4 px-3 sm:px-4 flex items-start justify-between gap-4 cursor-pointer transition-colors ${
-                    isActive ? 'bg-[var(--bg-subtle)]' : 'hover:bg-[var(--bg-subtle)]/50'
-                  }`}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      setActiveTopic(topic);
-                    }
-                  }}
-                  aria-pressed={isActive}
-                >
-                  <div className="flex items-start gap-3.5">
-                    <span className="font-mono text-xs font-bold text-[var(--accent)] pt-0.5">
-                      {topic.index}
-                    </span>
-                    <div>
-                      <h3
-                        className={`text-base font-serif font-bold transition-colors ${
-                          isActive ? 'text-[var(--accent)]' : 'text-[var(--text)] group-hover:text-[var(--text)]'
+                <div key={topic.id} className="transition-colors">
+                  <div
+                    onMouseEnter={() => setActiveTopic(topic)}
+                    onClick={() => setActiveTopic(topic)}
+                    className={`group py-4 px-3 sm:px-4 flex items-start justify-between gap-4 cursor-pointer transition-colors ${
+                      isActive ? 'bg-[var(--bg-subtle)]' : 'hover:bg-[var(--bg-subtle)]/50'
+                    }`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        setActiveTopic(topic);
+                      }
+                    }}
+                    aria-pressed={isActive}
+                  >
+                    <div className="flex items-start gap-3.5">
+                      <span className="font-mono text-xs font-bold text-[var(--accent)] pt-0.5">
+                        {topic.index}
+                      </span>
+                      <div>
+                        <h3
+                          className={`text-base font-serif font-bold transition-colors ${
+                            isActive ? 'text-[var(--accent)]' : 'text-[var(--text)] group-hover:text-[var(--text)]'
+                          }`}
+                        >
+                          {topic.title}
+                        </h3>
+                        <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-1">
+                          {topic.desc}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 pt-1">
+                      <span className="text-[11px] font-mono text-[var(--text-muted)] hidden sm:inline">
+                        {topic.count}
+                      </span>
+                      <ArrowRight
+                        className={`w-4 h-4 transition-transform ${
+                          isActive
+                            ? 'text-[var(--accent)] translate-x-1'
+                            : 'text-[var(--text-muted)] group-hover:translate-x-0.5'
                         }`}
-                      >
-                        {topic.title}
-                      </h3>
-                      <p className="text-xs text-[var(--text-muted)] mt-1 line-clamp-1">
-                        {topic.desc}
-                      </p>
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0 pt-1">
-                    <span className="text-[11px] font-mono text-[var(--text-muted)] hidden sm:inline">
-                      {topic.count}
-                    </span>
-                    <ArrowRight
-                      className={`w-4 h-4 transition-transform ${
-                        isActive
-                          ? 'text-[var(--accent)] translate-x-1'
-                          : 'text-[var(--text-muted)] group-hover:translate-x-0.5'
-                      }`}
-                      aria-hidden="true"
-                    />
-                  </div>
+                  {/* Mobile Inline Preview Accordion (< lg) */}
+                  {isActive && (
+                    <div className="lg:hidden p-4 bg-[var(--bg-subtle)]/80 border-t border-[var(--border)] space-y-3 animate-in fade-in">
+                      <div className="p-3 rounded-lg bg-[var(--bg-card)] border border-[var(--border)] font-mono text-xs text-[var(--text)] overflow-x-auto">
+                        <pre className="text-xs font-mono leading-relaxed">
+                          {topic.codeSnippet}
+                        </pre>
+                      </div>
+
+                      <div className="p-2.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-subtle)] text-xs text-[var(--text)] font-sans">
+                        <span className="text-[10px] font-mono font-bold text-[var(--accent)] uppercase block mb-0.5">
+                          Mental model insight
+                        </span>
+                        {topic.keyInsight}
+                      </div>
+
+                      <Link
+                        href={`/workbench?topic=${topic.id}`}
+                        className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-md bg-[var(--accent)] text-white text-xs font-mono font-semibold shadow-2xs"
+                      >
+                        <span>Launch {topic.title} visualizer</span>
+                        <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          {/* Right: Live Topic Preview Card */}
-          <div className="lg:col-span-5 sticky top-24 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 space-y-4 shadow-2xs">
+          {/* Right: Live Topic Preview Card (Desktop: lg+) */}
+          <div className="hidden lg:block lg:col-span-5 sticky top-24 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-5 space-y-4 shadow-2xs">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-bold text-[var(--accent)]">
