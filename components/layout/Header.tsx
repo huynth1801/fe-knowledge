@@ -1,16 +1,15 @@
 'use client';
 
 import React from 'react';
-import { PanelLeft, PanelLeftClose } from 'lucide-react';
+import { PanelLeft, PanelLeftClose, Search, Play, BookOpen, Layers, HelpCircle, FileText } from 'lucide-react';
 
 interface HeaderProps {
   activeView: 'simulation' | 'cheatsheet';
   onSelectView: (view: 'simulation' | 'cheatsheet') => void;
   isSidebarOpen: boolean;
   onToggleSidebar: () => void;
-  activeTopicTitle?: string;
-  cheatsheetLabel?: string;
-  runtimeBadge?: string;
+  onOpenPredictModal?: () => void;
+  hasSimulation?: boolean;
 }
 
 export function Header({
@@ -18,68 +17,112 @@ export function Header({
   onSelectView,
   isSidebarOpen,
   onToggleSidebar,
-  cheatsheetLabel = 'Sổ tay kiến thức',
-  runtimeBadge = 'V8 Runtime',
+  onOpenPredictModal,
+  hasSimulation = true,
 }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[var(--border)] bg-[var(--background)] px-4 sm:px-6 py-3 flex items-center justify-between shrink-0">
+    <header className="sticky top-0 z-40 w-full border-b border-zinc-200 bg-white px-4 sm:px-6 py-2.5 flex items-center justify-between shrink-0">
       {/* Brand & Sidebar Toggle */}
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
           title={isSidebarOpen ? 'Thu gọn danh mục (Ctrl+B)' : 'Mở danh mục bài học'}
-          className="p-1.5 rounded-lg border border-[var(--border)] bg-[var(--card)] hover:bg-[var(--card-subtle)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors cursor-pointer shadow-2xs"
+          className="p-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-500 hover:text-zinc-800 transition-colors cursor-pointer shadow-2xs"
         >
           {isSidebarOpen ? (
-            <PanelLeftClose className="w-4 h-4 text-[var(--accent)]" />
+            <PanelLeftClose className="w-4 h-4 text-[#CC6745]" />
           ) : (
             <PanelLeft className="w-4 h-4" />
           )}
         </button>
 
-        <div className="w-8 h-8 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center font-serif text-lg font-bold shadow-2xs">
-          ✦
-        </div>
+        {/* Logo matching pen.dev */}
+        <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => onSelectView('cheatsheet')}>
+          <div className="w-7 h-7 rounded-lg bg-[#CC6745] text-white flex items-center justify-center font-mono font-bold text-xs shadow-2xs">
+            {'{ }'}
+          </div>
 
-        <div>
-          <span className="font-serif font-bold text-lg tracking-tight text-[var(--foreground)] leading-none block">
+          <span className="font-bold text-[15px] tracking-tight text-zinc-900 leading-none">
             FE Visualizer
           </span>
-          <p className="text-[12px] text-[var(--muted)] mt-0.5 hidden sm:block">
-            Trực quan hoá cơ chế hoạt động Front-End
-          </p>
         </div>
       </div>
 
-      {/* Mode Switcher Tabs */}
-      <div className="flex items-center p-1 rounded-xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[14px]">
+      {/* Center Navigation Tabs matching pen.dev: Học | Mô phỏng | Thử thách | Tài liệu */}
+      <nav className="hidden sm:flex items-center gap-1 text-[13px] font-medium text-zinc-600">
         <button
-          onClick={() => onSelectView('simulation')}
-          className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer font-medium ${
-            activeView === 'simulation'
-              ? 'bg-[var(--card)] text-[var(--foreground)] font-semibold shadow-2xs border border-[var(--border)]'
-              : 'text-[var(--muted)] hover:text-[var(--foreground)]'
+          onClick={() => onSelectView('cheatsheet')}
+          className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+            activeView === 'cheatsheet'
+              ? 'text-zinc-900 font-bold bg-zinc-100/80'
+              : 'hover:text-zinc-900 hover:bg-zinc-50'
           }`}
         >
-          Sân khấu mô phỏng
+          Học
         </button>
+
+        {hasSimulation ? (
+          <button
+            onClick={() => onSelectView('simulation')}
+            className={`px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+              activeView === 'simulation'
+                ? 'text-[#CC6745] font-bold bg-orange-50'
+                : 'hover:text-zinc-900 hover:bg-zinc-50'
+            }`}
+          >
+            Mô phỏng
+          </button>
+        ) : (
+          <span className="px-3 py-1 text-zinc-400 text-[12px] cursor-not-allowed" title="Chủ đề này không cần mô phỏng máy ảo">
+            Mô phỏng
+          </span>
+        )}
+
+        {onOpenPredictModal && (
+          <button
+            onClick={onOpenPredictModal}
+            className="px-3 py-1 rounded-lg hover:text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer"
+          >
+            Thử thách
+          </button>
+        )}
 
         <button
           onClick={() => onSelectView('cheatsheet')}
-          className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer font-medium ${
-            activeView === 'cheatsheet'
-              ? 'bg-[var(--card)] text-[var(--foreground)] font-semibold shadow-2xs border border-[var(--border)]'
-              : 'text-[var(--muted)] hover:text-[var(--foreground)]'
-          }`}
+          className="px-3 py-1 rounded-lg hover:text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer"
         >
-          {cheatsheetLabel}
+          Tài liệu
         </button>
-      </div>
+      </nav>
 
-      {/* Right runtime badge */}
-      <div className="flex items-center gap-2 text-[13px] text-[var(--foreground)]">
-        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="font-medium font-mono">{runtimeBadge}</span>
+      {/* Right Search & Action Button matching pen.dev */}
+      <div className="flex items-center gap-2.5">
+        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50/80 text-[12px] text-zinc-500">
+          <Search className="w-3.5 h-3.5" />
+          <span>Tìm kiếm...</span>
+          <kbd className="text-[10px] font-mono bg-white border border-zinc-200 px-1 py-0.2 rounded shadow-2xs text-zinc-400">
+            ⌘K
+          </kbd>
+        </div>
+
+        {/* Chạy mô phỏng Button (Red / Terracotta) */}
+        {hasSimulation ? (
+          <button
+            onClick={() => onSelectView(activeView === 'simulation' ? 'cheatsheet' : 'simulation')}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#CC6745] hover:bg-[#B85635] text-white text-[13px] font-semibold transition-all shadow-xs cursor-pointer"
+          >
+            <Play className="w-3.5 h-3.5 fill-current" />
+            <span>{activeView === 'simulation' ? 'Xem bài học' : 'Chạy mô phỏng'}</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => onSelectView('cheatsheet')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-600 text-[12px] font-medium"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Sổ tay lý thuyết</span>
+          </button>
+        )}
       </div>
     </header>
   );
