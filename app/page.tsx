@@ -1,69 +1,204 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import { Header } from '@/components/layout/Header';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { SimulationPlayer } from '@/components/visualizer/SimulationPlayer';
+import { EventLoopStage } from '@/components/visualizer/EventLoopStage';
+import { CodeViewer } from '@/components/visualizer/CodeViewer';
+import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
+import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
+import { PredictModal } from '@/components/visualizer/PredictModal';
+import { TopicRoadmapView } from '@/components/visualizer/TopicRoadmapView';
+import { eventLoopScenarios } from '@/lib/scenarios/event-loop-data';
+import { TopicId } from '@/lib/types';
+import { Code, Flame } from 'lucide-react';
 
 export default function Home() {
+  const [currentTopic, setCurrentTopic] = useState<TopicId>('event-loop');
+  const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
+
+  const scenario = eventLoopScenarios[selectedScenarioIndex];
+  const currentStep = scenario.steps[currentStepIndex];
+
+  // Actions
+  const handleSelectScenario = (index: number) => {
+    setSelectedScenarioIndex(index);
+    setCurrentStepIndex(0);
+    setIsPlaying(false);
+  };
+
+  const handleStepNext = () => {
+    if (currentStepIndex < scenario.steps.length - 1) {
+      setCurrentStepIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleStepPrev = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleReset = () => {
+    setIsPlaying(false);
+    setCurrentStepIndex(0);
+  };
+
+  const handleSelectStep = (step: number) => {
+    setIsPlaying(false);
+    setCurrentStepIndex(step);
+  };
+
+  const handlePlayToggle = () => {
+    if (currentStepIndex === scenario.steps.length - 1) {
+      setCurrentStepIndex(0);
+      setIsPlaying(true);
+    } else {
+      setIsPlaying((prev) => !prev);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+      {/* Top Bar */}
+      <Header
+        activeTopicTitle={
+          currentTopic === 'event-loop' ? scenario.title : currentTopic
+        }
+      />
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Navigation Sidebar */}
+        <Sidebar
+          currentTopic={currentTopic}
+          onSelectTopic={(id) => setCurrentTopic(id)}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+
+        {/* Main Content Workspace */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+          {currentTopic !== 'event-loop' ? (
+            <TopicRoadmapView
+              topicId={currentTopic}
+              onBackToEventLoop={() => setCurrentTopic('event-loop')}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          ) : (
+            <>
+              {/* Header Title Section */}
+              <div className="space-y-3 pb-2 border-b border-[var(--border)]">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent-border)] font-semibold flex items-center gap-1">
+                    <Flame className="w-3.5 h-3.5 fill-[var(--accent)]" /> Phỏng vấn HOT
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--muted)]">
+                    Độ khó: <strong>{scenario.difficulty}</strong>
+                  </span>
+                  <span className="text-[var(--muted)]">•</span>
+                  <span className="text-[var(--muted)]">{scenario.tagline}</span>
+                </div>
+
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--foreground)] tracking-tight">
+                      {scenario.title}
+                    </h1>
+                    <p className="text-xs sm:text-sm text-[var(--muted)] mt-1 max-w-3xl leading-relaxed">
+                      {scenario.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Scenario Tabs Bar */}
+                <div className="pt-2 flex flex-wrap gap-2">
+                  {eventLoopScenarios.map((sc, idx) => {
+                    const isActive = idx === selectedScenarioIndex;
+                    return (
+                      <button
+                        key={sc.id}
+                        onClick={() => handleSelectScenario(idx)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 border ${
+                          isActive
+                            ? 'bg-[var(--card)] border-[var(--accent)] text-[var(--accent)] font-semibold shadow-xs'
+                            : 'bg-[var(--card-subtle)] border-[var(--border-subtle)] text-[var(--muted)] hover:text-[var(--foreground)]'
+                        }`}
+                      >
+                        <span className="w-4 h-4 rounded-full bg-[var(--border)] text-[10px] flex items-center justify-center font-mono">
+                          {idx + 1}
+                        </span>
+                        <span>{sc.title}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Player Controller Bar */}
+              <SimulationPlayer
+                currentStep={currentStepIndex}
+                totalSteps={scenario.steps.length}
+                isPlaying={isPlaying}
+                playbackSpeed={playbackSpeed}
+                onPlayToggle={handlePlayToggle}
+                onStepNext={handleStepNext}
+                onStepPrev={handleStepPrev}
+                onReset={handleReset}
+                onSelectStep={handleSelectStep}
+                onChangeSpeed={(spd) => setPlaybackSpeed(spd)}
+                onOpenPredictModal={() => setIsPredictModalOpen(true)}
+              />
+
+              {/* Interactive Simulation Stage (Event Loop / Call Stack / Queues) */}
+              <EventLoopStage state={currentStep.state} />
+
+              {/* Bottom Grid: Code Sync + Explanation + Console Output */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* Left: Code Viewer (5 cols) */}
+                <div className="lg:col-span-5 space-y-4">
+                  <div className="flex items-center justify-between text-xs font-mono text-[var(--muted)]">
+                    <span className="flex items-center gap-1.5 font-semibold text-[var(--foreground)]">
+                      <Code className="w-4 h-4 text-[var(--accent)]" /> Mã nguồn đồng bộ theo step
+                    </span>
+                    <span className="text-[11px]">Dòng thực thi tô màu viền cam</span>
+                  </div>
+                  <CodeViewer
+                    code={scenario.code}
+                    activeLines={currentStep.activeCodeLines}
+                    scenarioTitle={`scenario-${selectedScenarioIndex + 1}.js`}
+                  />
+                </div>
+
+                {/* Right: Explanation & Console (7 cols) */}
+                <div className="lg:col-span-7 space-y-4">
+                  <ExplanationPanel
+                    stepIndex={currentStepIndex}
+                    totalSteps={scenario.steps.length}
+                    title={currentStep.title}
+                    explanation={currentStep.explanation}
+                    interviewInsight={currentStep.interviewInsight}
+                  />
+
+                  <ConsoleCard logs={currentStep.state.consoleLogs} />
+                </div>
+              </div>
+            </>
+          )}
+        </main>
+      </div>
+
+      {/* Quiz / Predict Modal */}
+      <PredictModal
+        scenario={scenario}
+        isOpen={isPredictModalOpen}
+        onClose={() => setIsPredictModalOpen(false)}
+        onStartSimulation={() => {
+          handleReset();
+          handlePlayToggle();
+        }}
+      />
     </div>
   );
 }
