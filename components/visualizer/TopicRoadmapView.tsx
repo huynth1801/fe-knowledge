@@ -72,6 +72,19 @@ const topicDetails: Record<
     interviewPoints: [],
     visualMockupDesc: '',
   },
+  'bundle-optimization': {
+    title: 'Tree Shaking & Lazy Loading',
+    subtitle: 'ES Modules Static Analysis & Code Splitting',
+    icon: <Sparkles className="w-6 h-6 text-emerald-600" />,
+    description: 'Đã sẵn sàng hoạt động trong sổ tay tra cứu chuyên sâu.',
+    interviewPoints: [
+      'Tại sao CommonJS (require) không thể Tree Shake được mà bắt buộc phải dùng ES Modules (import/export)?',
+      'Ý nghĩa của flag "sideEffects": false trong package.json và bẫy xóa nhầm CSS.',
+      'So sánh dynamic import() trong React (React.lazy) vs Next.js (next/dynamic với ssr: false).',
+      'Hiểm hoạ Barrel Files (index.ts re-export) làm phình to bundle và cách khắc phục.',
+    ],
+    visualMockupDesc: '',
+  },
   'cors-security': {
     title: 'CORS & Web Security',
     subtitle: 'OPTIONS Preflight & Defense',

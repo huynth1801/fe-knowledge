@@ -9,6 +9,7 @@ export type TopicId =
   | 'nextjs-rendering'
   | 'rendering-pipeline'
   | 'http-cache'
+  | 'bundle-optimization'
   | 'core-web-vitals'
   | 'virtual-list'
   | 'cors-security'

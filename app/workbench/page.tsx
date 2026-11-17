@@ -29,6 +29,7 @@ import { ReactRerenderCheatsheet } from '@/components/visualizer/react/ReactRere
 import { HttpCacheCheatsheet } from '@/components/visualizer/cache/HttpCacheCheatsheet';
 import { StateManagementCheatsheet } from '@/components/visualizer/state/StateManagementCheatsheet';
 import { CiCdCheatsheet } from '@/components/visualizer/cicd/CiCdCheatsheet';
+import { BundleOptimizationCheatsheet } from '@/components/visualizer/perf/BundleOptimizationCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
@@ -94,6 +95,7 @@ function WorkbenchContent() {
   const isRealtimeTopic = currentTopic === 'websocket-realtime';
   const isDesignTopic = currentTopic === 'design-tokens';
   const isVitalsTopic = currentTopic === 'core-web-vitals';
+  const isBundleOptTopic = currentTopic === 'bundle-optimization';
   const isCssTopic = currentTopic === 'stacking-context';
   const isNextTopic = currentTopic === 'nextjs-rendering';
   const isFiberTopic = currentTopic === 'fiber-tree';
@@ -192,16 +194,7 @@ function WorkbenchContent() {
     }
   };
 
-  const isInteractiveTopicReady =
-    currentTopic === 'event-loop' ||
-    currentTopic === 'closures' ||
-    currentTopic === 'fiber-tree' ||
-    currentTopic === 'nextjs-rendering' ||
-    currentTopic === 'stacking-context' ||
-    currentTopic === 'core-web-vitals' ||
-    currentTopic === 'design-tokens' ||
-    currentTopic === 'websocket-realtime' ||
-    currentTopic === 'testing-visual-regression';
+  const isInteractiveTopicReady = currentTopicMeta?.isReady ?? false;
 
   return (
     <div className="h-screen flex flex-col bg-white text-zinc-900 overflow-hidden font-sans">
@@ -253,6 +246,8 @@ function WorkbenchContent() {
                 <StateManagementCheatsheet />
               ) : isHttpCacheTopic ? (
                 <HttpCacheCheatsheet />
+              ) : isBundleOptTopic ? (
+                <BundleOptimizationCheatsheet />
               ) : isCiCdTopic ? (
                 <CiCdCheatsheet />
               ) : isNextTopic ? (

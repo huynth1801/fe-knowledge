@@ -16,6 +16,9 @@ import {
   ArrowRight,
   Code2,
   ExternalLink,
+  Zap,
+  Database,
+  GitPullRequest,
 } from 'lucide-react';
 
 const topicIcons: Record<string, React.ReactNode> = {
@@ -24,12 +27,16 @@ const topicIcons: Record<string, React.ReactNode> = {
   'prototype': <GitBranch className="w-5 h-5 text-[#CC6745]" />,
   'fiber-tree': <Layers className="w-5 h-5 text-[#CC6745]" />,
   'react-re-renders': <Activity className="w-5 h-5 text-[#CC6745]" />,
+  'state-management': <Boxes className="w-5 h-5 text-[#CC6745]" />,
+  'http-cache': <Database className="w-5 h-5 text-[#CC6745]" />,
+  'bundle-optimization': <Zap className="w-5 h-5 text-[#CC6745]" />,
   'nextjs-rendering': <Boxes className="w-5 h-5 text-[#CC6745]" />,
   'stacking-context': <Layers className="w-5 h-5 text-[#CC6745]" />,
   'core-web-vitals': <Activity className="w-5 h-5 text-[#CC6745]" />,
   'websocket-realtime': <Radio className="w-5 h-5 text-[#CC6745]" />,
   'design-tokens': <Palette className="w-5 h-5 text-[#CC6745]" />,
   'testing-visual-regression': <FileCode className="w-5 h-5 text-[#CC6745]" />,
+  'cicd-github-actions': <GitPullRequest className="w-5 h-5 text-[#CC6745]" />,
 };
 
 export default function LandingPage() {
@@ -62,13 +69,13 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-base sm:text-lg text-zinc-700 leading-relaxed max-w-2xl font-sans">
-                Build accurate mental models for JavaScript Event Loop, React Fiber reconciliation,
-                Closures, and CSS Stacking Context with step-by-step browser runtime visual simulations.
+                Xây dựng trực giác kỹ thuật chính xác về JavaScript Event Loop, React Re-renders,
+                HTTP Cache, Tree Shaking & Lazy Loading, Core Web Vitals và Next.js SSR/ISR với môi trường mô phỏng trực quan.
               </p>
 
               {/* Hard Fact on First Screen */}
               <p className="font-mono text-xs sm:text-sm text-zinc-600 bg-white/80 border border-zinc-200/90 rounded-lg px-3.5 py-2 inline-block">
-                11 runtime engine visualizers, 33 interview scenarios, 0 hidden runtime abstractions.
+                15 chuyên đề Front-End kỹ thuật cao (Runtime, Cache, Performance, Tree Shaking, State, CI/CD), 33+ kịch bản phỏng vấn, 0 ảo tưởng trừu tượng.
               </p>
 
               {/* Primary Call to Action Buttons */}
@@ -163,11 +170,11 @@ export default function LandingPage() {
                 Curriculum Matrix
               </span>
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-zinc-950">
-                Core Engine Visualizers
+                Core Engine Visualizers & Technical Deep Dives
               </h2>
               <p className="text-base text-zinc-600">
-                Explore 11 interactive visual environments covering JavaScript runtime execution,
-                React reconciliation, CSS geometry, and web network protocols.
+                Khám phá 15 chuyên đề trực quan bao quát JavaScript Runtime, React Reconciliation,
+                HTTP Cache & Storage, Bundle Optimization (Tree Shaking & Lazy Loading), và Next.js.
               </p>
             </div>
 
