@@ -14,10 +14,10 @@ export function ClosureStage({ state, className = '' }: ClosureStageProps) {
 
   return (
     <div
-      className={`rounded-2xl border border-[var(--border)] bg-[#FDFCFB] p-4 sm:p-5 shadow-xs flex flex-col justify-between relative overflow-hidden ${className}`}
+      className={`rounded-2xl border border-[var(--border)] bg-[#FDFCFB] p-3.5 sm:p-5 shadow-xs flex flex-col justify-between relative overflow-visible lg:overflow-hidden ${className}`}
     >
       {/* Top Banner with Scope Chain Status */}
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)] shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-pulse" />
           <h2 className="font-serif font-bold text-[15px] sm:text-[16px] text-[var(--foreground)]">
@@ -26,23 +26,23 @@ export function ClosureStage({ state, className = '' }: ClosureStageProps) {
         </div>
 
         {activeLookup ? (
-          <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-900 shadow-2xs flex items-center gap-1.5 font-semibold animate-in fade-in">
+          <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-900 shadow-2xs flex items-center gap-1.5 font-semibold animate-in fade-in self-start sm:self-auto">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             <span>Scope Lookup: Tìm thấy biến `{activeLookup.variable}`!</span>
           </div>
         ) : (
-          <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] shadow-2xs">
+          <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] shadow-2xs self-start sm:self-auto">
             Trạng thái bộ nhớ: <strong className="text-indigo-700">Đang thực thi</strong>
           </div>
         )}
       </div>
 
-      {/* Main 2-Column Split: Call Stack (Left) & Heap / Lexical Scopes (Right) */}
-      <div className="grid grid-cols-12 gap-4 flex-1 min-h-0 items-stretch py-2.5">
+      {/* Main 2-Column Split: Call Stack & Heap / Lexical Scopes */}
+      <div className="flex flex-col sm:grid sm:grid-cols-12 gap-4 flex-1 min-h-0 sm:items-stretch py-2.5">
         {/* ======================================================== */}
-        {/* 1. LEFT: Execution Context Stack (4 cols)                */}
+        {/* 1. Execution Context Stack                               */}
         {/* ======================================================== */}
-        <div className="col-span-12 sm:col-span-4 rounded-2xl border-2 border-dashed border-[#D1CCC4] bg-white/70 p-3 flex flex-col h-full min-h-0">
+        <div className="w-full sm:col-span-4 rounded-2xl border-2 border-dashed border-[#D1CCC4] bg-white/70 p-3 flex flex-col min-h-[140px] sm:h-full sm:min-h-0">
           <div className="flex items-center gap-2 mb-2.5 shrink-0">
             <div className="w-6 h-6 rounded bg-indigo-600 text-white font-bold text-[11px] flex items-center justify-center font-mono shadow-2xs">
               EC
@@ -78,9 +78,9 @@ export function ClosureStage({ state, className = '' }: ClosureStageProps) {
         </div>
 
         {/* ======================================================== */}
-        {/* 2. RIGHT: Lexical Environment & Heap Memory (8 cols)     */}
+        {/* 2. Lexical Environment & Heap Memory                     */}
         {/* ======================================================== */}
-        <div className="col-span-12 sm:col-span-8 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50/15 p-3.5 flex flex-col h-full min-h-0">
+        <div className="w-full sm:col-span-8 rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50/15 p-3.5 flex flex-col min-h-[200px] sm:h-full sm:min-h-0">
           <div className="flex items-center justify-between mb-2 shrink-0">
             <div className="flex items-center gap-2">
               <Database className="w-4 h-4 text-amber-700" />

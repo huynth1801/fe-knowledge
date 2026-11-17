@@ -276,8 +276,8 @@ function WorkbenchContent() {
               )}
             </section>
           ) : (
-            /* 100% SINGLE-VIEWPORT WORKBENCH (Chỉ dành cho các chủ đề ĐÁNG VISUALIZE) */
-            <div className="flex-1 flex flex-col gap-2.5 min-h-0 w-full animate-in fade-in">
+            /* 100% SINGLE-VIEWPORT WORKBENCH on desktop, fluid vertical scroll on mobile */
+            <div className="flex flex-col gap-3 w-full lg:flex-1 lg:min-h-0 animate-in fade-in">
               {/* Top Compact Scenario Selection Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 pb-1.5 border-b border-zinc-200">
                 <div className="flex items-center gap-2 min-w-0">
@@ -314,9 +314,9 @@ function WorkbenchContent() {
               </div>
 
               {/* 2-Column Grid (Responsive: Mobile stacked with Player/Stage first, Desktop side-by-side) */}
-              <div className="flex-1 min-h-0 flex flex-col lg:grid lg:grid-cols-12 gap-3.5 items-stretch">
+              <div className="flex flex-col gap-3.5 items-stretch lg:grid lg:grid-cols-12 lg:flex-1 lg:min-h-0">
                 {/* Stage + Player Column (Top on Mobile, Right on Desktop) */}
-                <div className="w-full lg:col-span-7 flex flex-col gap-3 min-h-0 h-auto lg:h-full order-1 lg:order-2">
+                <div className="w-full flex flex-col gap-3 shrink-0 lg:shrink lg:col-span-7 lg:h-full lg:min-h-0 order-1 lg:order-2">
                   <SimulationPlayer
                     currentStep={currentStepIndex}
                     totalSteps={totalSteps}
@@ -335,27 +335,27 @@ function WorkbenchContent() {
                   {isRealtimeTopic ? (
                     <WebSocketStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   ) : isVitalsTopic ? (
                     <WebVitalsStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   ) : isCssTopic ? (
                     <StackingContextStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   ) : isNextTopic ? (
                     <NextRenderingStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   ) : isFiberTopic ? (
                     <ReactFiberStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   ) : isRerenderTopic ? (
                     <ReactRerenderStage
@@ -370,12 +370,12 @@ function WorkbenchContent() {
                   ) : isClosuresTopic ? (
                     <ClosureStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   ) : (
                     <EventLoopDiagramStage
                       state={currentStep.state as any}
-                      className="flex-1 min-h-[260px] lg:min-h-0"
+                      className="h-auto min-h-[300px] lg:flex-1 lg:min-h-0"
                     />
                   )}
 
@@ -389,7 +389,7 @@ function WorkbenchContent() {
                 </div>
 
                 {/* Code + Console Column (Bottom on Mobile, Left on Desktop) */}
-                <div className="w-full lg:col-span-5 flex flex-col gap-3 min-h-0 h-auto lg:h-full order-2 lg:order-1">
+                <div className="w-full flex flex-col gap-3 shrink-0 lg:shrink lg:col-span-5 lg:h-full lg:min-h-0 order-2 lg:order-1">
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
@@ -410,12 +410,12 @@ function WorkbenchContent() {
                         ? `counter-app-${selectedScenarioIndex + 1}.tsx`
                         : `scenario-${selectedScenarioIndex + 1}.js`
                     }
-                    className="min-h-[200px] lg:min-h-[180px] lg:flex-[3]"
+                    className="min-h-[220px] max-h-[360px] lg:max-h-none lg:flex-[3]"
                   />
 
                   <ConsoleCard
                     logs={currentStep.state.consoleLogs}
-                    className="min-h-[140px] lg:min-h-[140px] lg:flex-[2]"
+                    className="min-h-[160px] max-h-[240px] lg:max-h-none lg:flex-[2]"
                   />
                 </div>
               </div>

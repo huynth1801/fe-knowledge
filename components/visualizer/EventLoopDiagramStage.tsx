@@ -24,10 +24,10 @@ export function EventLoopDiagramStage({
 
   return (
     <div
-      className={`rounded-2xl border border-[var(--border)] bg-[#FDFCFB] p-4 sm:p-5 shadow-xs flex flex-col justify-between relative overflow-hidden ${className}`}
+      className={`rounded-2xl border border-[var(--border)] bg-[#FDFCFB] p-3.5 sm:p-5 shadow-xs flex flex-col justify-between relative overflow-visible lg:overflow-hidden ${className}`}
     >
       {/* Top Banner with Phase Tag */}
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)] shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-pulse" />
           <h2 className="font-serif font-bold text-[15px] sm:text-[16px] text-[var(--foreground)]">
@@ -35,7 +35,7 @@ export function EventLoopDiagramStage({
           </h2>
         </div>
 
-        <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] shadow-2xs">
+        <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] shadow-2xs self-start sm:self-auto">
           Pha hiện tại:{' '}
           <strong className="text-[var(--accent)] font-semibold">
             {eventLoopPhase === 'idle' && 'Thực thi Call Stack'}
@@ -47,13 +47,13 @@ export function EventLoopDiagramStage({
         </div>
       </div>
 
-      {/* Main 3-Column Diagram Layout with wider Call Stack */}
-      <div className="grid grid-cols-12 gap-3 sm:gap-4 flex-1 min-h-0 items-stretch py-2.5">
+      {/* Main Diagram Layout: Stacked vertically on mobile, 3-column grid on desktop */}
+      <div className="flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-4 flex-1 min-h-0 sm:items-stretch py-2.5">
         {/* ======================================================== */}
         {/* 1. LEFT: JS Call Stack Container (Wider: 4 cols)         */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-4 rounded-2xl border-2 border-dashed p-3 flex flex-col h-full min-h-0 transition-all ${
+          className={`w-full sm:col-span-4 rounded-2xl border-2 border-dashed p-3 flex flex-col min-h-[140px] sm:h-full sm:min-h-0 transition-all ${
             activeContainer === 'callStack'
               ? 'border-amber-500 bg-amber-50/20 shadow-xs'
               : 'border-[#D1CCC4] bg-white/70'
@@ -102,7 +102,7 @@ export function EventLoopDiagramStage({
         {/* 2. CENTER: Queues Container (5 cols)                    */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-5 rounded-2xl border-2 border-dashed p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 transition-all ${
+          className={`w-full sm:col-span-5 rounded-2xl border-2 border-dashed p-3 sm:p-4 flex flex-col justify-between min-h-[220px] sm:h-full sm:min-h-0 transition-all ${
             activeContainer === 'microtasks' || activeContainer === 'macrotasks'
               ? 'border-emerald-500 bg-emerald-50/15'
               : 'border-[#D1CCC4] bg-white/70'
@@ -228,7 +228,7 @@ export function EventLoopDiagramStage({
         {/* 3. RIGHT: WebAPIs Container (3 cols)                     */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-3 rounded-2xl border p-3 flex flex-col h-full min-h-0 transition-all justify-between ${
+          className={`w-full sm:col-span-3 rounded-2xl border p-3 flex flex-col min-h-[140px] sm:h-full sm:min-h-0 transition-all justify-between ${
             activeContainer === 'webApis'
               ? 'border-rose-400 bg-rose-50/30 ring-1 ring-rose-400'
               : 'border-[var(--border)] bg-white/70'
