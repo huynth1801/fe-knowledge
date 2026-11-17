@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { SimulationState, EventLoopPhase } from '@/lib/types';
-import { Layers, Timer, Zap, Clock, ArrowDown, ArrowRight, RefreshCw, Sparkles } from 'lucide-react';
+import { Layers, Timer, Zap, Clock, ArrowDown, ArrowRight, RefreshCw, Sparkles, BookOpen } from 'lucide-react';
 
 interface EventLoopStageProps {
   state: SimulationState;
@@ -61,7 +61,7 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* COLUMN 1: Call Stack (4 cols) */}
         <div
-          className={`lg:col-span-4 rounded-xl border p-4 transition-all flex flex-col min-h-[220px] ${
+          className={`lg:col-span-4 rounded-xl border p-4 transition-all flex flex-col min-h-[240px] ${
             activeContainer === 'callStack'
               ? 'border-[var(--accent)] bg-[var(--accent-light)]/30 ring-1 ring-[var(--accent)]'
               : 'border-[var(--border)] bg-[var(--card-subtle)]/50'
@@ -116,59 +116,86 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
 
         {/* COLUMN 2: Central Event Loop Hub (4 cols) */}
         <div className="lg:col-span-4 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 flex flex-col items-center justify-center text-center relative overflow-hidden">
-          <div className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-2">
-            Event Loop Controller
+          <div className="text-xs font-semibold text-[var(--muted)] uppercase tracking-wider mb-1">
+            Vòng lặp điều phối
           </div>
 
           {/* Central Animated Wheel */}
-          <div className="relative w-32 h-32 my-2 flex items-center justify-center">
+          <div className="relative w-28 h-28 my-1 flex items-center justify-center">
             <div
               className={`absolute inset-0 rounded-full border-4 border-dashed border-[var(--border)] transition-transform duration-700 ${
                 eventLoopPhase !== 'idle' ? 'animate-spin' : ''
               }`}
               style={{ animationDuration: '6s' }}
             />
-            <div className="w-20 h-20 rounded-full bg-[var(--accent-light)] border-2 border-[var(--accent)] flex flex-col items-center justify-center shadow-xs">
+            <div className="w-18 h-18 rounded-full bg-[var(--accent-light)] border-2 border-[var(--accent)] flex flex-col items-center justify-center shadow-xs">
               <RefreshCw
-                className={`w-6 h-6 text-[var(--accent)] ${
+                className={`w-5 h-5 text-[var(--accent)] ${
                   eventLoopPhase !== 'idle' ? 'animate-spin' : ''
                 }`}
                 style={{ animationDuration: '3s' }}
               />
-              <span className="text-[10px] font-mono font-bold text-[var(--accent)] mt-0.5">
-                Loop
+              <span className="text-[10px] font-mono font-bold text-[var(--accent)]">
+                Tick
               </span>
             </div>
           </div>
 
-          {/* Order of Priority Diagram */}
-          <div className="w-full mt-3 space-y-1.5 text-left text-[11px] font-mono">
+          {/* 4-Step Priority Flowchart in Center */}
+          <div className="w-full mt-2 space-y-1 text-left text-[10px] font-mono">
             <div
-              className={`p-1.5 rounded flex items-center justify-between transition-colors ${
-                eventLoopPhase === 'microtaskDrain'
-                  ? 'bg-amber-100 text-amber-900 font-bold border border-amber-300'
-                  : 'text-[var(--muted)]'
+              className={`p-1 rounded flex items-center justify-between transition-colors ${
+                eventLoopPhase === 'callStackCheck'
+                  ? 'bg-stone-200 text-stone-900 font-bold border border-stone-400'
+                  : 'text-[var(--muted)] bg-[var(--card-subtle)]'
               }`}
             >
-              <span>1. Microtask Queue</span>
-              <span className="text-[10px] bg-amber-200/80 px-1 rounded">Drain ALL</span>
+              <span>① Call Stack</span>
+              <span className="text-[9px] text-[var(--muted)]">Sync rỗng</span>
             </div>
+
             <div
-              className={`p-1.5 rounded flex items-center justify-between transition-colors ${
-                eventLoopPhase === 'macrotaskPick'
-                  ? 'bg-sky-100 text-sky-900 font-bold border border-sky-300'
-                  : 'text-[var(--muted)]'
+              className={`p-1 rounded flex items-center justify-between transition-colors ${
+                eventLoopPhase === 'microtaskDrain'
+                  ? 'bg-amber-100 text-amber-950 font-bold border border-amber-300 ring-1 ring-amber-400'
+                  : 'text-[var(--muted)] bg-[var(--card-subtle)]'
               }`}
             >
-              <span>2. Macrotask Queue</span>
-              <span className="text-[10px] bg-sky-200/80 px-1 rounded">Pick 1 only</span>
+              <span className="text-amber-800 font-semibold">② Microtask Queue</span>
+              <span className="text-[9px] bg-amber-200 text-amber-900 px-1 rounded font-bold">
+                Dọn sạch 100%
+              </span>
+            </div>
+
+            <div
+              className={`p-1 rounded flex items-center justify-between transition-colors ${
+                eventLoopPhase === 'renderPhase'
+                  ? 'bg-emerald-100 text-emerald-950 font-bold border border-emerald-300'
+                  : 'text-[var(--muted)] bg-[var(--card-subtle)]'
+              }`}
+            >
+              <span className="text-emerald-800">③ Render Steps</span>
+              <span className="text-[9px] text-emerald-700">rAF / Paint</span>
+            </div>
+
+            <div
+              className={`p-1 rounded flex items-center justify-between transition-colors ${
+                eventLoopPhase === 'macrotaskPick'
+                  ? 'bg-sky-100 text-sky-950 font-bold border border-sky-300 ring-1 ring-sky-400'
+                  : 'text-[var(--muted)] bg-[var(--card-subtle)]'
+              }`}
+            >
+              <span className="text-sky-800 font-semibold">④ Macrotask Queue</span>
+              <span className="text-[9px] bg-sky-200 text-sky-900 px-1 rounded font-bold">
+                Lấy đúng 1 task
+              </span>
             </div>
           </div>
         </div>
 
         {/* COLUMN 3: Web APIs (4 cols) */}
         <div
-          className={`lg:col-span-4 rounded-xl border p-4 transition-all flex flex-col min-h-[220px] ${
+          className={`lg:col-span-4 rounded-xl border p-4 transition-all flex flex-col min-h-[240px] ${
             activeContainer === 'webApis'
               ? 'border-emerald-500 bg-emerald-50/50 ring-1 ring-emerald-500'
               : 'border-[var(--border)] bg-[var(--card-subtle)]/50'
@@ -211,31 +238,47 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
         </div>
       </div>
 
-      {/* Bottom Queues Row */}
+      {/* Bottom Queues Row with API Tag Chips */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
         {/* Microtask Queue (VIP Lane) */}
         <div
-          className={`rounded-xl border p-4 transition-all ${
+          className={`rounded-xl border p-4 transition-all space-y-3 ${
             activeContainer === 'microtasks'
               ? 'border-amber-500 bg-amber-50/40 ring-2 ring-amber-400'
               : 'border-amber-200/80 bg-amber-50/20'
           }`}
         >
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1.5 text-xs text-amber-900">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs text-amber-950">
               <Zap className="w-4 h-4 text-amber-600 fill-amber-500" />
               <span className="font-serif font-bold text-sm">Microtask Queue</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-mono font-semibold">
-                VIP Priority
+              <span className="text-[10px] px-2 py-0.5 rounded bg-amber-200 text-amber-900 font-mono font-bold">
+                VIP Priority (Drain ALL)
               </span>
             </div>
-            <span className="text-[11px] font-mono text-amber-800">
+            <span className="text-[11px] font-mono text-amber-800 font-semibold">
               {microtaskQueue.length} microtask
             </span>
           </div>
-          <p className="text-[11px] text-amber-800/80 mb-3">
-            Chứa callback từ <code>Promise.then()</code>, <code>async/await</code>, <code>queueMicrotask()</code>.
-          </p>
+
+          {/* Quick API tags */}
+          <div className="flex flex-wrap gap-1 text-[10px] font-mono text-amber-900">
+            <span className="px-1.5 py-0.5 rounded bg-amber-100/80 border border-amber-300">
+              Promise.then()
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-amber-100/80 border border-amber-300">
+              await
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-amber-100/80 border border-amber-300">
+              queueMicrotask()
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-amber-100/80 border border-amber-300">
+              MutationObserver
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-amber-100/80 border border-amber-300">
+              process.nextTick
+            </span>
+          </div>
 
           <div className="min-h-[85px] border-dashed border-2 border-amber-300 rounded-lg p-2 bg-[var(--card)] flex items-center gap-2 overflow-x-auto">
             {microtaskQueue.length === 0 ? (
@@ -246,7 +289,7 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
               microtaskQueue.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="shrink-0 p-2 rounded-md bg-amber-100/80 border border-amber-300 text-amber-900 text-xs font-mono shadow-2xs animate-in fade-in"
+                  className="shrink-0 p-2 rounded-md bg-amber-100/90 border border-amber-300 text-amber-950 text-xs font-mono shadow-2xs animate-in fade-in"
                 >
                   <div className="font-semibold flex items-center gap-1">
                     <span className="w-4 h-4 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-bold">
@@ -254,7 +297,7 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
                     </span>
                     <span>{item.name}</span>
                   </div>
-                  <span className="text-[9px] text-amber-700 uppercase font-sans mt-0.5 block">
+                  <span className="text-[9px] text-amber-800 uppercase font-sans mt-0.5 block">
                     Source: {item.source}
                   </span>
                 </div>
@@ -265,27 +308,43 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
 
         {/* Macrotask Queue */}
         <div
-          className={`rounded-xl border p-4 transition-all ${
+          className={`rounded-xl border p-4 transition-all space-y-3 ${
             activeContainer === 'macrotasks'
               ? 'border-sky-500 bg-sky-50/40 ring-2 ring-sky-400'
               : 'border-sky-200/80 bg-sky-50/20'
           }`}
         >
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1.5 text-xs text-sky-900">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-xs text-sky-950">
               <Clock className="w-4 h-4 text-sky-600" />
               <span className="font-serif font-bold text-sm">Macrotask Queue</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-sky-100 text-sky-800 font-mono font-semibold">
-                Task Queue
+              <span className="text-[10px] px-2 py-0.5 rounded bg-sky-200 text-sky-900 font-mono font-bold">
+                Task Queue (Pick 1 per tick)
               </span>
             </div>
-            <span className="text-[11px] font-mono text-sky-800">
+            <span className="text-[11px] font-mono text-sky-800 font-semibold">
               {macrotaskQueue.length} macrotask
             </span>
           </div>
-          <p className="text-[11px] text-sky-800/80 mb-3">
-            Chứa callback từ <code>setTimeout()</code>, <code>setInterval()</code>, I/O events.
-          </p>
+
+          {/* Quick API tags */}
+          <div className="flex flex-wrap gap-1 text-[10px] font-mono text-sky-900">
+            <span className="px-1.5 py-0.5 rounded bg-sky-100/80 border border-sky-300">
+              setTimeout()
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-sky-100/80 border border-sky-300">
+              setInterval()
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-sky-100/80 border border-sky-300">
+              setImmediate()
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-sky-100/80 border border-sky-300">
+              UI Events (click/scroll)
+            </span>
+            <span className="px-1.5 py-0.5 rounded bg-sky-100/80 border border-sky-300">
+              I/O Callbacks
+            </span>
+          </div>
 
           <div className="min-h-[85px] border-dashed border-2 border-sky-300 rounded-lg p-2 bg-[var(--card)] flex items-center gap-2 overflow-x-auto">
             {macrotaskQueue.length === 0 ? (
@@ -296,7 +355,7 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
               macrotaskQueue.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="shrink-0 p-2 rounded-md bg-sky-100/80 border border-sky-300 text-sky-900 text-xs font-mono shadow-2xs animate-in fade-in"
+                  className="shrink-0 p-2 rounded-md bg-sky-100/90 border border-sky-300 text-sky-950 text-xs font-mono shadow-2xs animate-in fade-in"
                 >
                   <div className="font-semibold flex items-center gap-1">
                     <span className="w-4 h-4 rounded-full bg-sky-500 text-white text-[10px] flex items-center justify-center font-bold">
@@ -304,7 +363,7 @@ export function EventLoopStage({ state }: EventLoopStageProps) {
                     </span>
                     <span>{item.name}</span>
                   </div>
-                  <span className="text-[9px] text-sky-700 uppercase font-sans mt-0.5 block">
+                  <span className="text-[9px] text-sky-800 uppercase font-sans mt-0.5 block">
                     Source: {item.source}
                   </span>
                 </div>

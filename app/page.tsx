@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { SimulationPlayer } from '@/components/visualizer/SimulationPlayer';
 import { EventLoopStage } from '@/components/visualizer/EventLoopStage';
+import { TaskCheatsheet } from '@/components/visualizer/TaskCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
@@ -175,6 +176,9 @@ export default function Home() {
 
               {/* Interactive Simulation Stage (Event Loop / Call Stack / Queues) */}
               <EventLoopStage state={currentStep.state} />
+
+              {/* Cheatsheet: What are Microtasks & Macrotasks & Lifecycle */}
+              <TaskCheatsheet />
 
               {/* Bottom Grid: Code Sync + Explanation + Console Output */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
