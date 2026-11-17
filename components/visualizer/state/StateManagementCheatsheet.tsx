@@ -230,10 +230,10 @@ const mutation = useMutation({
       </section>
 
       {/* ========================================================================= */}
-      {/* TAB 1: KIẾN TRÚC TÁCH BIỆT STATE                                          */}
+      {/* TAB 1: KIẾN TRÚC TÁCH BIỆT STATE & SO SÁNH CODE RTK VS ZUSTAND            */}
       {/* ========================================================================= */}
       {activeTab === 'architecture' && (
-        <section className="space-y-4 animate-in fade-in" aria-label="Kiến trúc State">
+        <section className="space-y-6 animate-in fade-in" aria-label="Kiến trúc State">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-5 rounded-2xl border border-zinc-200 bg-white space-y-3 shadow-2xs">
               <h3 className="font-bold text-[16px] text-zinc-950 font-serif">
@@ -253,14 +253,119 @@ const mutation = useMutation({
               </p>
             </div>
           </div>
+
+          {/* Direct Code Face-off: Redux Toolkit vs Zustand */}
+          <div className="rounded-2xl border border-zinc-300 bg-white p-5 sm:p-6 space-y-4 shadow-2xs">
+            <div className="flex items-center justify-between pb-3 border-b border-zinc-200">
+              <div className="space-y-0.5">
+                <span className="font-mono text-[11px] font-bold text-[#BD5332] uppercase">
+                  Code Face-off
+                </span>
+                <h3 className="font-serif font-bold text-lg text-zinc-950">
+                  Cùng bài toán Shopping Cart: Redux Toolkit vs Zustand
+                </h3>
+              </div>
+              <span className="text-xs bg-zinc-100 text-zinc-700 px-2.5 py-1 rounded-md font-mono font-semibold">
+                Client State Implementation
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 font-mono text-xs">
+              {/* 1. Redux Toolkit */}
+              <div className="p-4 rounded-xl bg-zinc-950 text-zinc-100 space-y-2.5 overflow-x-auto border border-zinc-800">
+                <div className="flex items-center justify-between text-zinc-400 border-b border-zinc-800 pb-2">
+                  <span className="text-purple-300 font-bold">1. Redux Toolkit (@reduxjs/toolkit)</span>
+                  <span className="text-[10px] bg-purple-950 text-purple-300 px-1.5 py-0.5 rounded">
+                    Opinionated (~35KB)
+                  </span>
+                </div>
+                <pre className="text-xs font-mono leading-relaxed text-zinc-200">
+{`// 1. Tạo Slice với Immer tích hợp sẵn
+import { createSlice, configureStore, PayloadAction } from '@reduxjs/toolkit';
+
+interface CartState { items: { id: string; qty: number }[] }
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: { items: [] } as CartState,
+  reducers: {
+    addItem: (state, action: PayloadAction<{ id: string }>) => {
+      // ✅ Cho phép mutate state giả lập nhờ Immer
+      const existing = state.items.find(i => i.id === action.payload.id);
+      if (existing) existing.qty += 1;
+      else state.items.push({ id: action.payload.id, qty: 1 });
+    },
+  },
+});
+
+export const store = configureStore({
+  reducer: { cart: cartSlice.reducer },
+});
+
+// 2. Sử dụng trong Component
+// Phải bọc <Provider store={store}> ở root
+function CartBadge() {
+  const dispatch = useAppDispatch();
+  const count = useAppSelector(s => s.cart.items.length);
+  return <button onClick={() => dispatch(cartSlice.actions.addItem({ id: 'p1' }))}>
+    Cart ({count})
+  </button>;
+}`}
+                </pre>
+              </div>
+
+              {/* 2. Zustand */}
+              <div className="p-4 rounded-xl bg-zinc-950 text-zinc-100 space-y-2.5 overflow-x-auto border border-zinc-800">
+                <div className="flex items-center justify-between text-zinc-400 border-b border-zinc-800 pb-2">
+                  <span className="text-amber-300 font-bold">2. Zustand (v5 / v4)</span>
+                  <span className="text-[10px] bg-amber-950 text-amber-300 px-1.5 py-0.5 rounded">
+                    Unopinionated (~1.2KB)
+                  </span>
+                </div>
+                <pre className="text-xs font-mono leading-relaxed text-zinc-200">
+{`// 1. Tạo Store duy nhất trong 1 file (Zero-boilerplate)
+import { create } from 'zustand';
+
+interface CartStore {
+  items: { id: string; qty: number }[];
+  addItem: (id: string) => void;
+}
+
+export const useCartStore = create<CartStore>((set) => ({
+  items: [],
+  addItem: (id) => set((state) => {
+    const existing = state.items.find(i => i.id === id);
+    if (existing) {
+      return {
+        items: state.items.map(i => i.id === id ? { ...i, qty: i.qty + 1 } : i)
+      };
+    }
+    return { items: [...state.items, { id, qty: 1 }] };
+  }),
+}));
+
+// 2. Sử dụng trực tiếp - KHÔNG CẦN PROVIDER!
+function CartBadge() {
+  // ✅ Atomic selector: Chỉ re-render khi items.length đổi!
+  const count = useCartStore((s) => s.items.length);
+  const addItem = useCartStore((s) => s.addItem);
+  return <button onClick={() => addItem('p1')}>Cart ({count})</button>;
+}
+
+// 3. Đọc/Ghi NGOÀI React (Axios / WebSocket):
+// useCartStore.getState().addItem('p1');`}
+                </pre>
+              </div>
+            </div>
+          </div>
         </section>
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 2: BẢNG SO SÁNH THƯ VIỆN                                              */}
+      {/* TAB 2: BẢNG SO SÁNH THƯ VIỆN & CÂY QUYẾT ĐỊNH (DECISION TREE)              */}
       {/* ========================================================================= */}
       {activeTab === 'comparison' && (
-        <section className="space-y-4 animate-in fade-in" aria-label="So sánh thư viện">
+        <section className="space-y-6 animate-in fade-in" aria-label="So sánh thư viện">
           <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden shadow-2xs">
             <table className="w-full text-left border-collapse text-[13px]">
               <thead>
@@ -298,6 +403,52 @@ const mutation = useMutation({
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          {/* Decision Matrix Grid */}
+          <div className="rounded-2xl border border-zinc-300 bg-[#FBF9F5] p-5 space-y-4 shadow-2xs">
+            <h3 className="font-serif font-bold text-lg text-zinc-950 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#BD5332]" />
+              Cây quyết định: Khi nào chọn Redux Toolkit vs Zustand vs TanStack Query?
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl border border-amber-300 bg-white space-y-2">
+                <span className="font-mono text-xs font-bold text-amber-900 uppercase">
+                  🏆 Chọn Zustand khi:
+                </span>
+                <ul className="text-xs text-zinc-700 space-y-1.5 list-disc list-inside">
+                  <li>Ứng dụng Next.js, Vite, React 19 hiện đại.</li>
+                  <li>Cần sự tinh gọn, không muốn cấu hình Context Provider.</li>
+                  <li>Cần truy cập state bên ngoài React (Axios interceptor, WebSocket handler).</li>
+                  <li>Tối ưu Bundle size (&lt; 2KB).</li>
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl border border-purple-300 bg-white space-y-2">
+                <span className="font-mono text-xs font-bold text-purple-900 uppercase">
+                  🏢 Chọn Redux Toolkit khi:
+                </span>
+                <ul className="text-xs text-zinc-700 space-y-1.5 list-disc list-inside">
+                  <li>Dự án Enterprise quy mô lớn, nhiều team làm chung (50+ devs).</li>
+                  <li>Yêu cầu quy chuẩn nghiêm ngặt về Action, Reducer bất biến.</li>
+                  <li>Cần Time-travel debugging với Redux DevTools trong môi trường kiểm thử.</li>
+                  <li>Dự án ngân hàng/tài chính có pipeline middleware phức tạp.</li>
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl border border-blue-300 bg-white space-y-2">
+                <span className="font-mono text-xs font-bold text-blue-900 uppercase">
+                  ⚡ Luôn chọn TanStack Query khi:
+                </span>
+                <ul className="text-xs text-zinc-700 space-y-1.5 list-disc list-inside">
+                  <li>Bất kỳ dữ liệu nào đến từ REST API hoặc GraphQL.</li>
+                  <li>Cần Cache Invalidation, Deduplication tự động.</li>
+                  <li>Cần Optimistic Updates, Polling, Infinite Scroll.</li>
+                  <li><strong>Tuyệt đối không lưu API data vào Redux hay Zustand!</strong></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
       )}

@@ -56,17 +56,24 @@ function WorkbenchContent() {
   const topicParam = searchParams.get('topic') as TopicId | null;
   const viewParam = searchParams.get('view') as ('simulation' | 'cheatsheet') | null;
 
+  // Meta lookup
+  const allTopics = curriculumCategories.flatMap((c) => c.topics);
+
   const [currentTopic, setCurrentTopic] = useState<TopicId>(topicParam || 'event-loop');
   const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>(viewParam || 'cheatsheet');
 
   useEffect(() => {
     if (topicParam) {
       setCurrentTopic(topicParam);
+      const targetMeta = allTopics.find((t) => t.id === topicParam);
+      if (targetMeta && !targetMeta.hasSimulation) {
+        setActiveView('cheatsheet');
+      }
     }
     if (viewParam) {
       setActiveView(viewParam);
     }
-  }, [topicParam, viewParam]);
+  }, [topicParam, viewParam, allTopics]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -80,8 +87,6 @@ function WorkbenchContent() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
 
-  // Meta lookup
-  const allTopics = curriculumCategories.flatMap((c) => c.topics);
   const currentTopicMeta = allTopics.find((t) => t.id === currentTopic);
   const hasSimulation = currentTopicMeta?.hasSimulation ?? true;
 
