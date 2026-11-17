@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { PanelLeft, PanelLeftClose, Search, Play, FileText } from 'lucide-react';
+import Link from 'next/link';
+import { PanelLeft, PanelLeftClose, Search, Play, FileText, Home as HomeIcon } from 'lucide-react';
 
 interface HeaderProps {
   activeView: 'simulation' | 'cheatsheet';
@@ -37,12 +38,11 @@ export function Header({
           )}
         </button>
 
-        {/* Logo matching pen.dev */}
-        <div
-          className="flex items-center gap-2.5 cursor-pointer min-h-[44px]"
-          onClick={() => onSelectView('cheatsheet')}
-          role="button"
-          tabIndex={0}
+        {/* Logo linking to landing page */}
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 cursor-pointer min-h-[44px] hover:opacity-90 transition-opacity"
+          title="Về trang chủ FE Visualizer"
         >
           <div className="w-7 h-7 rounded-lg bg-[#BD5332] text-white flex items-center justify-center font-mono font-bold text-xs shadow-2xs">
             {'{ }'}
@@ -51,11 +51,20 @@ export function Header({
           <span className="font-bold text-[15px] tracking-tight text-zinc-900 leading-none">
             FE Visualizer
           </span>
-        </div>
+        </Link>
       </div>
 
       {/* Center Navigation Links */}
       <nav className="hidden sm:flex items-center gap-4 text-[13px] font-semibold text-zinc-700" aria-label="Điều hướng chính">
+        <Link
+          href="/"
+          className="py-1.5 text-zinc-600 hover:text-zinc-950 transition-colors flex items-center gap-1.5"
+          title="Trang chủ giới thiệu"
+        >
+          <HomeIcon className="w-3.5 h-3.5" />
+          <span>Trang chủ</span>
+        </Link>
+
         <button
           onClick={() => onSelectView('cheatsheet')}
           className={`py-1.5 transition-colors cursor-pointer ${
