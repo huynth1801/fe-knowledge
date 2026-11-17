@@ -27,15 +27,15 @@ export function EventLoopDiagramStage({
       className={`rounded-2xl border border-[var(--border)] bg-[#FDFCFB] p-4 sm:p-5 shadow-xs flex flex-col justify-between relative overflow-hidden ${className}`}
     >
       {/* Top Banner with Phase Tag */}
-      <div className="flex items-center justify-between pb-2 border-b border-[var(--border-subtle)] shrink-0">
+      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)] shrink-0">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse" />
-          <h2 className="font-serif font-bold text-[15px] text-[var(--foreground)]">
+          <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-pulse" />
+          <h2 className="font-serif font-bold text-[15px] sm:text-[16px] text-[var(--foreground)]">
             Mô hình trực quan Event Loop Architecture
           </h2>
         </div>
 
-        <div className="text-[12px] font-mono px-2.5 py-0.5 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--muted)]">
+        <div className="text-[12px] font-mono px-3 py-1 rounded-full bg-[var(--card)] border border-[var(--border)] text-[var(--muted)] shadow-2xs">
           Pha hiện tại:{' '}
           <strong className="text-[var(--accent)] font-semibold">
             {eventLoopPhase === 'idle' && 'Thực thi Call Stack'}
@@ -47,13 +47,13 @@ export function EventLoopDiagramStage({
         </div>
       </div>
 
-      {/* Main 3-Column Diagram Layout matching the uploaded diagram */}
-      <div className="grid grid-cols-12 gap-3 sm:gap-4 flex-1 min-h-0 items-center py-2 relative">
+      {/* Main 3-Column Diagram Layout */}
+      <div className="grid grid-cols-12 gap-3 sm:gap-4 flex-1 min-h-0 items-stretch py-2.5">
         {/* ======================================================== */}
         {/* 1. LEFT: JS Call Stack Container (Dashed Outer Border)  */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-3 rounded-2xl border-2 border-dashed p-3 flex flex-col h-full min-h-[220px] transition-all relative ${
+          className={`col-span-12 sm:col-span-3 rounded-2xl border-2 border-dashed p-3 flex flex-col h-full min-h-0 transition-all ${
             activeContainer === 'callStack'
               ? 'border-amber-500 bg-amber-50/20 shadow-xs'
               : 'border-[#D1CCC4] bg-white/70'
@@ -70,7 +70,7 @@ export function EventLoopDiagramStage({
           </div>
 
           {/* Inner Stack Column (Bottom-to-Top LIFO) */}
-          <div className="flex-1 rounded-xl border border-[var(--border)] bg-[#FAF8F5] p-2 flex flex-col-reverse justify-start gap-1.5 overflow-y-auto">
+          <div className="flex-1 min-h-0 rounded-xl border border-[var(--border)] bg-[#FAF8F5] p-2 flex flex-col-reverse justify-start gap-2 overflow-y-auto">
             {callStack.length === 0 ? (
               <div className="flex-1 flex items-center justify-center text-[12px] text-[var(--muted)] italic text-center py-4">
                 Stack rỗng
@@ -79,13 +79,13 @@ export function EventLoopDiagramStage({
               callStack.map((frame) => (
                 <div
                   key={frame.id}
-                  className={`px-2.5 py-1.5 rounded-lg text-[12px] font-mono font-semibold transition-all shadow-2xs flex items-center justify-between ${
+                  className={`px-2.5 py-1.5 rounded-lg text-[12px] font-mono font-semibold transition-all shadow-2xs flex items-center justify-between gap-1 ${
                     frame.isExecuting
                       ? 'bg-[#FBBF24] border border-[#D97706] text-[#78350F] ring-2 ring-amber-300'
                       : 'bg-[#FDE68A] border border-[#F59E0B] text-[#92400E]'
                   }`}
                 >
-                  <span className="truncate">{frame.name}</span>
+                  <span className="leading-snug break-all">{frame.name}</span>
                   {frame.isExecuting && (
                     <span className="w-2 h-2 rounded-full bg-amber-700 animate-ping shrink-0" />
                   )}
@@ -99,17 +99,17 @@ export function EventLoopDiagramStage({
         {/* 2. CENTER: Queues Container (Dashed Outer Border)       */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-6 rounded-2xl border-2 border-dashed p-3.5 flex flex-col justify-between h-full min-h-[220px] transition-all ${
+          className={`col-span-12 sm:col-span-6 rounded-2xl border-2 border-dashed p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 transition-all ${
             activeContainer === 'microtasks' || activeContainer === 'macrotasks'
-              ? 'border-emerald-500 bg-emerald-50/10'
+              ? 'border-emerald-500 bg-emerald-50/15'
               : 'border-[#D1CCC4] bg-white/70'
           }`}
         >
           {/* Top: Microtask Queue */}
           <div
-            className={`rounded-xl border p-2.5 transition-all ${
+            className={`rounded-xl border p-2.5 transition-all shrink-0 ${
               activeContainer === 'microtasks'
-                ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-400'
+                ? 'border-emerald-500 bg-emerald-50/50 ring-1 ring-emerald-400'
                 : 'border-[var(--border)] bg-[#FAF8F5]'
             }`}
           >
@@ -123,25 +123,25 @@ export function EventLoopDiagramStage({
             </div>
 
             {/* Microtask Cards (Light Mint Green) */}
-            <div className="flex items-center gap-2 overflow-x-auto min-h-[44px] py-0.5">
+            <div className="flex items-center gap-2 overflow-x-auto min-h-[44px] py-1">
               {microtaskQueue.length === 0 ? (
-                <div className="flex items-center gap-2 text-[11px] font-mono text-[var(--muted)] opacity-70">
-                  <span className="px-2 py-1 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
+                <div className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--muted)] opacity-70">
+                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
                     .then()
                   </span>
-                  <span className="px-2 py-1 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
                     .catch()
                   </span>
-                  <span className="px-2 py-1 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
                     .finally()
                   </span>
                   <span className="text-[11px] italic ml-1">(Rỗng)</span>
                 </div>
               ) : (
-                microtaskQueue.map((item, idx) => (
+                microtaskQueue.map((item) => (
                   <div
                     key={item.id}
-                    className="shrink-0 px-2.5 py-1 rounded-md bg-[#DCFCE7] border border-[#86EFAC] text-[#14532D] text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in"
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#DCFCE7] border border-[#86EFAC] text-[#14532D] text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in"
                   >
                     <span>{item.name}</span>
                   </div>
@@ -151,15 +151,15 @@ export function EventLoopDiagramStage({
           </div>
 
           {/* Sequence Arrow Down between Microtask and Macrotask */}
-          <div className="flex items-center justify-center py-0.5 text-[#78716A]">
+          <div className="flex items-center justify-center py-1 text-[#78716A] shrink-0">
             <ArrowDown className="w-4 h-4 text-emerald-600 animate-bounce" />
           </div>
 
           {/* Middle: Macrotask Queue */}
           <div
-            className={`rounded-xl border p-2.5 transition-all ${
+            className={`rounded-xl border p-2.5 transition-all shrink-0 ${
               activeContainer === 'macrotasks'
-                ? 'border-emerald-600 bg-emerald-50/50 ring-1 ring-emerald-500'
+                ? 'border-emerald-600 bg-emerald-50/60 ring-1 ring-emerald-500'
                 : 'border-[var(--border)] bg-[#FAF8F5]'
             }`}
           >
@@ -173,16 +173,16 @@ export function EventLoopDiagramStage({
             </div>
 
             {/* Macrotask Cards (Solid Forest Green) */}
-            <div className="flex items-center gap-2 overflow-x-auto min-h-[44px] py-0.5">
+            <div className="flex items-center gap-2 overflow-x-auto min-h-[44px] py-1">
               {macrotaskQueue.length === 0 ? (
-                <div className="flex items-center gap-2 text-[11px] font-mono text-white/90">
-                  <span className="px-2 py-1 rounded-md bg-[#16A34A] text-white">
+                <div className="flex items-center gap-1.5 text-[11px] font-mono text-white/90">
+                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white">
                     setTimeout
                   </span>
-                  <span className="px-2 py-1 rounded-md bg-[#16A34A] text-white">
+                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white">
                     I/O callback
                   </span>
-                  <span className="px-2 py-1 rounded-md bg-[#16A34A] text-white">
+                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white">
                     onclick
                   </span>
                   <span className="text-[11px] text-[var(--muted)] italic ml-1">
@@ -190,10 +190,10 @@ export function EventLoopDiagramStage({
                   </span>
                 </div>
               ) : (
-                macrotaskQueue.map((item, idx) => (
+                macrotaskQueue.map((item) => (
                   <div
                     key={item.id}
-                    className="shrink-0 px-2.5 py-1 rounded-md bg-[#15803D] border border-[#166534] text-white text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in"
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#15803D] border border-[#166534] text-white text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in"
                   >
                     <span>{item.name}</span>
                   </div>
@@ -202,8 +202,8 @@ export function EventLoopDiagramStage({
             </div>
           </div>
 
-          {/* Bottom Caption matching diagram: Event Loop caption */}
-          <div className="pt-2 text-center flex flex-col items-center justify-center">
+          {/* Bottom Caption: Event Loop & Quote cleanly inside center box */}
+          <div className="pt-2.5 pb-1 text-center flex flex-col items-center justify-center shrink-0 border-t border-[var(--border-subtle)] mt-2">
             <div className="flex items-center gap-1.5 text-[13px] font-bold text-[var(--foreground)]">
               <RefreshCw
                 className={`w-3.5 h-3.5 text-emerald-600 ${
@@ -213,7 +213,7 @@ export function EventLoopDiagramStage({
               />
               <span>Event Loop</span>
             </div>
-            <p className="text-[11px] text-[var(--muted)] italic mt-0.5">
+            <p className="text-[12px] text-[var(--muted)] italic mt-0.5 font-sans leading-tight">
               After each task, execute all microtasks in the Microtask Queue
             </p>
           </div>
@@ -223,7 +223,7 @@ export function EventLoopDiagramStage({
         {/* 3. RIGHT: WebAPIs Container (Timers, FS, Network)        */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-3 rounded-2xl border p-3 flex flex-col h-full min-h-[220px] transition-all justify-between ${
+          className={`col-span-12 sm:col-span-3 rounded-2xl border p-3 flex flex-col h-full min-h-0 transition-all justify-between ${
             activeContainer === 'webApis'
               ? 'border-rose-400 bg-rose-50/30 ring-1 ring-rose-400'
               : 'border-[var(--border)] bg-white/70'
@@ -240,7 +240,7 @@ export function EventLoopDiagramStage({
           </div>
 
           {/* Inner cards (Pink / Coral) */}
-          <div className="flex-1 rounded-xl border border-[var(--border)] bg-[#FAF8F5] p-2 flex flex-col gap-1.5 overflow-y-auto">
+          <div className="flex-1 min-h-0 rounded-xl border border-[var(--border)] bg-[#FAF8F5] p-2 flex flex-col gap-2 overflow-y-auto">
             {/* Timers block */}
             <div
               className={`p-2 rounded-lg border text-[12px] font-mono transition-all flex items-center justify-between ${
@@ -251,7 +251,7 @@ export function EventLoopDiagramStage({
             >
               <span>Timers</span>
               {webApis.length > 0 ? (
-                <span className="text-[10px] bg-rose-200 px-1 rounded text-rose-900">
+                <span className="text-[10px] bg-rose-200 px-1 rounded text-rose-900 font-bold">
                   {webApis[0].name}
                 </span>
               ) : (
@@ -271,26 +271,6 @@ export function EventLoopDiagramStage({
               <span className="text-[10px] opacity-70">idle</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Dynamic Flow Legend at bottom */}
-      <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-[var(--muted)] shrink-0">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#FCD34D] border border-[#F59E0B]" />
-          <span>Call Stack (LIFO)</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#DCFCE7] border border-[#86EFAC]" />
-          <span>Microtasks (VIP: Dọn sạch)</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#16A34A]" />
-          <span className="text-[#16A34A] font-semibold">Macrotasks (1 task/vòng)</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-[#FFE4E6] border border-[#FECDD3]" />
-          <span>WebAPIs</span>
         </div>
       </div>
     </div>
