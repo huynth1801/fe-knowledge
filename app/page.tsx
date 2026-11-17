@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { SimulationPlayer } from '@/components/visualizer/SimulationPlayer';
-import { EventLoopStage } from '@/components/visualizer/EventLoopStage';
+import { EventLoopDiagramStage } from '@/components/visualizer/EventLoopDiagramStage';
 import { TaskCheatsheet } from '@/components/visualizer/TaskCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
@@ -215,8 +215,8 @@ export default function Home() {
                     onOpenPredictModal={() => setIsPredictModalOpen(true)}
                   />
 
-                  {/* 2x2 Event Loop Stage (Call Stack, Web APIs, Microtasks, Macrotasks) */}
-                  <EventLoopStage
+                  {/* Visual Event Loop Architecture Diagram (matching the uploaded image) */}
+                  <EventLoopDiagramStage
                     state={currentStep.state}
                     className="flex-1 min-h-0"
                   />
