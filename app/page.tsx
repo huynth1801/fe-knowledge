@@ -36,17 +36,29 @@ import { webVitalsScenarios } from '@/lib/scenarios/web-vitals-data';
 import { designTokensScenarios } from '@/lib/scenarios/design-tokens-data';
 import { webSocketScenarios } from '@/lib/scenarios/websocket-realtime-data';
 import { testingScenarios } from '@/lib/scenarios/testing-regression-data';
+import { curriculumCategories } from '@/lib/curriculum';
 import { TopicId } from '@/lib/types';
 
 export default function Home() {
   const [currentTopic, setCurrentTopic] = useState<TopicId>('event-loop');
-  const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('simulation');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('cheatsheet');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      setIsSidebarOpen(true);
+    }
+  }, []);
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
+
+  // Meta lookup
+  const allTopics = curriculumCategories.flatMap((c) => c.topics);
+  const currentTopicMeta = allTopics.find((t) => t.id === currentTopic);
+  const hasSimulation = currentTopicMeta?.hasSimulation ?? true;
 
   // Active Scenarios based on topic
   const isTestingTopic = currentTopic === 'testing-visual-regression';
@@ -105,6 +117,11 @@ export default function Home() {
     setCurrentTopic(id);
     setSelectedScenarioIndex(0);
     setCurrentStepIndex(0);
+
+    const targetMeta = allTopics.find((t) => t.id === id);
+    if (targetMeta && !targetMeta.hasSimulation) {
+      setActiveView('cheatsheet');
+    }
   };
 
   const handleSelectScenario = (index: number) => {
@@ -154,168 +171,86 @@ export default function Home() {
     currentTopic === 'testing-visual-regression';
 
   return (
-    <div className="h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
-      {/* Top Header with Sidebar Toggle button */}
+    <div className="h-screen flex flex-col bg-white text-zinc-900 overflow-hidden font-sans">
+      {/* Top Header matching pen.dev layout */}
       <Header
         activeView={activeView}
         onSelectView={setActiveView}
         isSidebarOpen={isSidebarOpen}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
-        activeTopicTitle={scenario.title}
-        cheatsheetLabel={
-          isTestingTopic
-            ? 'Sổ tay Testing & QA'
-            : isRealtimeTopic
-            ? 'Sổ tay WebSocket & Viz'
-            : isDesignTopic
-            ? 'Sổ tay Design System'
-            : isVitalsTopic
-            ? 'Sổ tay Web Vitals'
-            : isCssTopic
-            ? 'Sổ tay 3D Z-Index'
-            : isNextTopic
-            ? 'Sổ tay Next.js SSR'
-            : isFiberTopic
-            ? 'Sổ tay React Fiber'
-            : isClosuresTopic
-            ? 'Sổ tay Closures'
-            : 'Sổ tay Micro / Macrotask'
-        }
-        runtimeBadge={
-          isTestingTopic
-            ? 'Playwright Test Runner'
-            : isRealtimeTopic
-            ? 'RFC 6455 Engine'
-            : isDesignTopic
-            ? 'Design Tokens W3C'
-            : isVitalsTopic
-            ? 'Chrome CrUX'
-            : isCssTopic
-            ? 'Blink Compositor'
-            : isNextTopic
-            ? 'Next.js 16 App Router'
-            : isFiberTopic
-            ? 'React 19 Reconciler'
-            : 'V8 Runtime'
-        }
+        onOpenPredictModal={() => setIsPredictModalOpen(true)}
+        hasSimulation={hasSimulation}
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Collapsible Left Topic Navigation Sidebar */}
+        {/* Collapsible Left Topic Navigation Sidebar matching pen.dev */}
         <Sidebar
           currentTopic={currentTopic}
           onSelectTopic={handleSelectTopic}
           isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
         />
 
         {/* Main Content Area */}
         <main
           className={`flex-1 overflow-hidden transition-all duration-200 ${
-            activeView === 'cheatsheet' || !isInteractiveTopicReady
-              ? 'overflow-y-auto p-6 sm:p-8'
-              : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-61px)]'
+            activeView === 'cheatsheet' || !hasSimulation || !isInteractiveTopicReady
+              ? 'overflow-y-auto p-4 sm:p-6 md:p-8 bg-white'
+              : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-53px)] bg-[#FAF8F5]'
           }`}
         >
           {!isInteractiveTopicReady ? (
-            <div className="max-w-5xl mx-auto w-full">
+            <section className="wrap max-w-5xl mx-auto w-full">
               <TopicRoadmapView
                 topicId={currentTopic}
                 onBackToEventLoop={() => handleSelectTopic('event-loop')}
               />
-            </div>
-          ) : activeView === 'cheatsheet' ? (
-            /* Dedicated Cheatsheet Mode */
-            <div className="max-w-5xl mx-auto w-full space-y-6 animate-in fade-in">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-2">
-                <div>
-                  <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[var(--foreground)] tracking-tight">
-                    {isTestingTopic
-                      ? 'Visual Regression & E2E Testing'
-                      : isRealtimeTopic
-                      ? 'WebSocket Lifecycle & Data Viz Engine'
-                      : isDesignTopic
-                      ? 'Design Tokens & Component Architecture'
-                      : isVitalsTopic
-                      ? 'Core Web Vitals & Main Thread'
-                      : isCssTopic
-                      ? '3D Stacking Context & Z-Index'
-                      : isNextTopic
-                      ? 'Next.js: SSR, SSG, ISR & RSC'
-                      : isFiberTopic
-                      ? 'React Fiber & Reconciliation'
-                      : isClosuresTopic
-                      ? 'Closures & Scope Chain'
-                      : 'Microtask vs Macrotask'}
-                  </h1>
-                  <p className="text-[17px] text-[var(--muted)] mt-1.5 leading-relaxed">
-                    {isTestingTopic
-                      ? 'Tài liệu cô đọng: Pixel-by-pixel Diffing, 6 Tiêu chuẩn Actionability Playwright và Testing Trophy.'
-                      : isRealtimeTopic
-                      ? 'Tài liệu cô đọng: Vòng đời WebSocket 101, Exponential Backoff và so sánh SVG vs Canvas vs WebGL.'
-                      : isDesignTopic
-                      ? 'Tài liệu cô đọng: 3 tầng Tokens, Compound Components Pattern, Storybook và kiểm thử a11y.'
-                      : isVitalsTopic
-                      ? 'Tài liệu cô đọng: 3 chỉ số vàng INP, LCP, CLS, kỹ thuật chia nhỏ tác vụ và bẫy phỏng vấn.'
-                      : isCssTopic
-                      ? 'Tài liệu cô đọng: 7 tầng phân lớp chuẩn W3C, thuộc tính kích hoạt ngầm và bẫy z-index.'
-                      : isNextTopic
-                      ? 'Tài liệu cô đọng: So sánh SSR, SSG, ISR, cơ chế Streaming HTML và các bẫy phỏng vấn Hydration.'
-                      : isFiberTopic
-                      ? 'Tài liệu cô đọng: Kiến trúc Fiber Dual Buffering, thuật toán Diffing và quy tắc Hooks.'
-                      : isClosuresTopic
-                      ? 'Tài liệu cô đọng: Cơ chế bộ nhớ Heap, Scope Chain và các bẫy phỏng vấn Closures.'
-                      : 'Tài liệu cô đọng để ôn phỏng vấn Front-End: Event Loop chạy việc nào trước, việc nào sau.'}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setActiveView('simulation')}
-                  className="px-5 py-2.5 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-[15px] font-semibold transition-all cursor-pointer shadow-xs shrink-0 self-start"
-                >
-                  Mở sân khấu mô phỏng
-                </button>
-              </div>
-
+            </section>
+          ) : activeView === 'cheatsheet' || !hasSimulation ? (
+            /* Dedicated Cheatsheet Mode matching pen.dev design */
+            <section className="wrap max-w-4xl mx-auto w-full space-y-6 animate-in fade-in" aria-label="Nội dung bài học">
               {/* Render corresponding Cheatsheet */}
-              {isTestingTopic ? (
-                <TestingCheatsheet />
-              ) : isRealtimeTopic ? (
-                <WebSocketCheatsheet />
-              ) : isDesignTopic ? (
-                <DesignTokensCheatsheet />
-              ) : isVitalsTopic ? (
-                <WebVitalsCheatsheet />
-              ) : isCssTopic ? (
-                <StackingContextCheatsheet />
+              {currentTopic === 'event-loop' ? (
+                <TaskCheatsheet />
               ) : isNextTopic ? (
                 <NextRenderingCheatsheet />
               ) : isFiberTopic ? (
                 <ReactCheatsheet />
               ) : isClosuresTopic ? (
                 <ClosureCheatsheet />
+              ) : isCssTopic ? (
+                <StackingContextCheatsheet />
+              ) : isVitalsTopic ? (
+                <WebVitalsCheatsheet />
+              ) : isDesignTopic ? (
+                <DesignTokensCheatsheet />
+              ) : isRealtimeTopic ? (
+                <WebSocketCheatsheet />
+              ) : isTestingTopic ? (
+                <TestingCheatsheet />
               ) : (
                 <TaskCheatsheet />
               )}
-            </div>
+            </section>
           ) : (
-            /* 100% SINGLE-VIEWPORT WORKBENCH (No page scroll needed!) */
+            /* 100% SINGLE-VIEWPORT WORKBENCH (Chỉ dành cho các chủ đề ĐÁNG VISUALIZE) */
             <div className="flex-1 flex flex-col gap-2.5 min-h-0 w-full animate-in fade-in">
               {/* Top Compact Scenario Selection Bar */}
-              <div className="flex items-center justify-between gap-3 shrink-0 pb-1 border-b border-[var(--border-subtle)]">
+              <div className="flex items-center justify-between gap-3 shrink-0 pb-1 border-b border-zinc-200">
                 <div className="flex items-center gap-2.5">
-                  <h1 className="font-serif font-bold text-[18px] text-[var(--foreground)] tracking-tight">
+                  <h1 className="font-serif font-bold text-[18px] text-zinc-900 tracking-tight">
                     {scenario.title}
                   </h1>
-                  <span className="px-2 py-0.2 rounded-full bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent-border)] font-semibold text-[11px] font-mono">
+                  <span className="px-2 py-0.2 rounded-full bg-orange-50 text-[#CC6745] border border-orange-200 font-semibold text-[11px] font-mono">
                     {scenario.difficulty}
                   </span>
-                  <span className="text-[13px] text-[var(--muted)] hidden md:inline">
+                  <span className="text-[13px] text-zinc-500 hidden md:inline">
                     • {scenario.tagline}
                   </span>
                 </div>
 
                 {/* Scenario tabs */}
-                <div className="flex items-center gap-1 p-0.5 rounded-xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[13px]">
+                <div className="flex items-center gap-1 p-0.5 rounded-xl bg-zinc-100 border border-zinc-200 text-[13px]">
                   {activeScenarios.map((sc, idx) => {
                     const isActive = idx === selectedScenarioIndex;
                     return (
@@ -324,8 +259,8 @@ export default function Home() {
                         onClick={() => handleSelectScenario(idx)}
                         className={`px-2.5 py-0.5 rounded-lg transition-all cursor-pointer font-mono text-[12px] ${
                           isActive
-                            ? 'bg-[var(--card)] text-[var(--accent)] font-bold shadow-2xs border border-[var(--border)]'
-                            : 'text-[var(--muted)] hover:text-[var(--foreground)]'
+                            ? 'bg-white text-[#CC6745] font-bold shadow-2xs border border-zinc-200'
+                            : 'text-zinc-600 hover:text-zinc-900'
                         }`}
                       >
                         Bài {idx + 1}
@@ -343,12 +278,8 @@ export default function Home() {
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
                     scenarioTitle={
-                      isTestingTopic
-                        ? `button.spec.ts`
-                        : isRealtimeTopic
+                      isRealtimeTopic
                         ? `socket-stream.ts`
-                        : isDesignTopic
-                        ? `tokens-schema-${selectedScenarioIndex + 1}.css`
                         : isVitalsTopic
                         ? `perf-task-${selectedScenarioIndex + 1}.js`
                         : isCssTopic
@@ -384,19 +315,9 @@ export default function Home() {
                     onOpenPredictModal={() => setIsPredictModalOpen(true)}
                   />
 
-                  {/* Render Visual Stage according to Topic */}
-                  {isTestingTopic ? (
-                    <TestingStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isRealtimeTopic ? (
+                  {/* Render Visual Stage according to Topic (CHỈ CÁC CHỦ ĐỀ ĐÁNG VISUALIZE) */}
+                  {isRealtimeTopic ? (
                     <WebSocketStage
-                      state={currentStep.state as any}
-                      className="flex-1 min-h-0"
-                    />
-                  ) : isDesignTopic ? (
-                    <DesignTokensStage
                       state={currentStep.state as any}
                       className="flex-1 min-h-0"
                     />
