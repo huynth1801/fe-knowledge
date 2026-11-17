@@ -1,4 +1,16 @@
-export type TopicId = 'event-loop' | 'closures' | 'prototype' | 'stacking-context' | 'fiber-tree' | 'rendering-pipeline' | 'http-cache';
+export type TopicId =
+  | 'event-loop'
+  | 'closures'
+  | 'prototype'
+  | 'stacking-context'
+  | 'fiber-tree'
+  | 'rendering-pipeline'
+  | 'http-cache'
+  | 'core-web-vitals'
+  | 'design-tokens'
+  | 'websocket-realtime'
+  | 'dataviz-maps'
+  | 'testing-visual-regression';
 
 export interface TopicCategory {
   id: string;
