@@ -2,7 +2,14 @@ import type { MetadataRoute } from 'next';
 import { curriculumCategories } from '@/lib/curriculum';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://fe-visualizer.dev';
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'https://feviz.vercel.app');
+
   const lastModified = new Date();
 
   // Root and workbench routes

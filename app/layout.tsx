@@ -24,6 +24,14 @@ const anthropicMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "https://feviz.vercel.app");
+
 export const viewport: Viewport = {
   themeColor: "#FAF8F5",
   width: "device-width",
@@ -32,7 +40,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fe-visualizer.dev"),
+  metadataBase: new URL(siteUrl),
   title: "FE Visualizer — Front-End Engine Visualizer for Web Developers",
   description:
     "Master the JavaScript Event Loop, React Fiber reconciliation, Closures, and CSS Stacking Context with interactive step-by-step browser runtime visual simulations.",
@@ -59,7 +67,7 @@ export const metadata: Metadata = {
     title: "FE Visualizer — Front-End Engine Visualizer for Web Developers",
     description:
       "Master the JavaScript Event Loop, React Fiber reconciliation, Closures, and CSS Stacking Context with interactive step-by-step browser runtime visual simulations.",
-    url: "https://fe-visualizer.dev",
+    url: siteUrl,
     siteName: "FE Visualizer",
     images: [
       {
@@ -103,9 +111,9 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebApplication",
-      "@id": "https://fe-visualizer.dev/#webapp",
+      "@id": `${siteUrl}/#webapp`,
       "name": "FE Visualizer",
-      "url": "https://fe-visualizer.dev",
+      "url": siteUrl,
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "All",
       "offers": {
@@ -119,14 +127,14 @@ const jsonLd = {
     },
     {
       "@type": "Course",
-      "@id": "https://fe-visualizer.dev/#course",
+      "@id": `${siteUrl}/#course`,
       "name": "Front-End Runtimes & Engine Internals",
       "description":
         "Deep interactive architectural course on JavaScript Event Loop, React Fiber reconciliation, Closures, and CSS Stacking Contexts.",
       "provider": {
         "@type": "Organization",
         "name": "FE Visualizer",
-        "sameAs": "https://fe-visualizer.dev",
+        "sameAs": siteUrl,
       },
     },
     {
