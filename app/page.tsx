@@ -17,6 +17,7 @@ import { TopicId } from '@/lib/types';
 export default function Home() {
   const [currentTopic, setCurrentTopic] = useState<TopicId>('event-loop');
   const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('simulation');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -84,29 +85,32 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
-      {/* Top Header */}
+      {/* Top Header with Sidebar Toggle button */}
       <Header
         activeView={activeView}
         onSelectView={setActiveView}
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         activeTopicTitle={scenario.title}
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Topic Navigation Sidebar */}
+        {/* Collapsible Left Topic Navigation Sidebar */}
         <Sidebar
           currentTopic={currentTopic}
           onSelectTopic={(id) => {
             setIsPlaying(false);
             setCurrentTopic(id);
           }}
+          isOpen={isSidebarOpen}
         />
 
         {/* Main Content Area */}
         <main
-          className={`flex-1 overflow-hidden ${
+          className={`flex-1 overflow-hidden transition-all duration-200 ${
             activeView === 'cheatsheet' || currentTopic !== 'event-loop'
               ? 'overflow-y-auto p-6 sm:p-8'
-              : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-65px)]'
+              : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-61px)]'
           }`}
         >
           {currentTopic !== 'event-loop' ? (
@@ -183,7 +187,7 @@ export default function Home() {
               <div className="flex-1 min-h-0 grid grid-cols-12 gap-3.5 items-stretch">
                 {/* Left Column: Code (Top) + Live Console Terminal (Bottom) */}
                 <div className="col-span-12 lg:col-span-5 flex flex-col gap-3 min-h-0 h-full">
-                  {/* Code Viewer: flex-[3] */}
+                  {/* Code Viewer */}
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
@@ -191,7 +195,7 @@ export default function Home() {
                     className="flex-[3] min-h-[180px]"
                   />
 
-                  {/* Console Terminal: flex-[2], always visible! */}
+                  {/* Console Terminal: always visible! */}
                   <ConsoleCard
                     logs={currentStep.state.consoleLogs}
                     className="flex-[2] min-h-[140px]"
@@ -215,7 +219,7 @@ export default function Home() {
                     onOpenPredictModal={() => setIsPredictModalOpen(true)}
                   />
 
-                  {/* Visual Event Loop Architecture Diagram (matching the uploaded image) */}
+                  {/* Visual Event Loop Architecture Diagram */}
                   <EventLoopDiagramStage
                     state={currentStep.state}
                     className="flex-1 min-h-0"

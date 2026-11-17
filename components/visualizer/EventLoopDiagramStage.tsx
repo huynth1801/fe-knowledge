@@ -47,13 +47,13 @@ export function EventLoopDiagramStage({
         </div>
       </div>
 
-      {/* Main 3-Column Diagram Layout */}
+      {/* Main 3-Column Diagram Layout with wider Call Stack */}
       <div className="grid grid-cols-12 gap-3 sm:gap-4 flex-1 min-h-0 items-stretch py-2.5">
         {/* ======================================================== */}
-        {/* 1. LEFT: JS Call Stack Container (Dashed Outer Border)  */}
+        {/* 1. LEFT: JS Call Stack Container (Wider: 4 cols)         */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-3 rounded-2xl border-2 border-dashed p-3 flex flex-col h-full min-h-0 transition-all ${
+          className={`col-span-12 sm:col-span-4 rounded-2xl border-2 border-dashed p-3 flex flex-col h-full min-h-0 transition-all ${
             activeContainer === 'callStack'
               ? 'border-amber-500 bg-amber-50/20 shadow-xs'
               : 'border-[#D1CCC4] bg-white/70'
@@ -79,13 +79,16 @@ export function EventLoopDiagramStage({
               callStack.map((frame) => (
                 <div
                   key={frame.id}
-                  className={`px-2.5 py-1.5 rounded-lg text-[12px] font-mono font-semibold transition-all shadow-2xs flex items-center justify-between gap-1 ${
+                  title={frame.name}
+                  className={`px-3 py-1.5 rounded-lg text-[12px] font-mono font-semibold transition-all shadow-2xs flex items-center justify-between gap-1.5 ${
                     frame.isExecuting
                       ? 'bg-[#FBBF24] border border-[#D97706] text-[#78350F] ring-2 ring-amber-300'
                       : 'bg-[#FDE68A] border border-[#F59E0B] text-[#92400E]'
                   }`}
                 >
-                  <span className="leading-snug break-all">{frame.name}</span>
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis flex-1">
+                    {frame.name}
+                  </span>
                   {frame.isExecuting && (
                     <span className="w-2 h-2 rounded-full bg-amber-700 animate-ping shrink-0" />
                   )}
@@ -96,10 +99,10 @@ export function EventLoopDiagramStage({
         </div>
 
         {/* ======================================================== */}
-        {/* 2. CENTER: Queues Container (Dashed Outer Border)       */}
+        {/* 2. CENTER: Queues Container (5 cols)                    */}
         {/* ======================================================== */}
         <div
-          className={`col-span-12 sm:col-span-6 rounded-2xl border-2 border-dashed p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 transition-all ${
+          className={`col-span-12 sm:col-span-5 rounded-2xl border-2 border-dashed p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 transition-all ${
             activeContainer === 'microtasks' || activeContainer === 'macrotasks'
               ? 'border-emerald-500 bg-emerald-50/15'
               : 'border-[#D1CCC4] bg-white/70'
@@ -126,13 +129,13 @@ export function EventLoopDiagramStage({
             <div className="flex items-center gap-2 overflow-x-auto min-h-[44px] py-1">
               {microtaskQueue.length === 0 ? (
                 <div className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--muted)] opacity-70">
-                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534] whitespace-nowrap">
                     .then()
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534] whitespace-nowrap">
                     .catch()
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534]">
+                  <span className="px-2 py-0.5 rounded-md bg-[#DCFCE7]/60 border border-[#BBF7D0] text-[#166534] whitespace-nowrap">
                     .finally()
                   </span>
                   <span className="text-[11px] italic ml-1">(Rỗng)</span>
@@ -141,7 +144,8 @@ export function EventLoopDiagramStage({
                 microtaskQueue.map((item) => (
                   <div
                     key={item.id}
-                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#DCFCE7] border border-[#86EFAC] text-[#14532D] text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in"
+                    title={item.name}
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#DCFCE7] border border-[#86EFAC] text-[#14532D] text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in whitespace-nowrap"
                   >
                     <span>{item.name}</span>
                   </div>
@@ -176,13 +180,13 @@ export function EventLoopDiagramStage({
             <div className="flex items-center gap-2 overflow-x-auto min-h-[44px] py-1">
               {macrotaskQueue.length === 0 ? (
                 <div className="flex items-center gap-1.5 text-[11px] font-mono text-white/90">
-                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white">
+                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white whitespace-nowrap">
                     setTimeout
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white">
+                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white whitespace-nowrap">
                     I/O callback
                   </span>
-                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white">
+                  <span className="px-2 py-0.5 rounded-md bg-[#16A34A] text-white whitespace-nowrap">
                     onclick
                   </span>
                   <span className="text-[11px] text-[var(--muted)] italic ml-1">
@@ -193,7 +197,8 @@ export function EventLoopDiagramStage({
                 macrotaskQueue.map((item) => (
                   <div
                     key={item.id}
-                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#15803D] border border-[#166534] text-white text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in"
+                    title={item.name}
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-[#15803D] border border-[#166534] text-white text-[12px] font-mono font-semibold shadow-2xs animate-in fade-in whitespace-nowrap"
                   >
                     <span>{item.name}</span>
                   </div>
@@ -203,7 +208,7 @@ export function EventLoopDiagramStage({
           </div>
 
           {/* Bottom Caption: Event Loop & Quote cleanly inside center box */}
-          <div className="pt-2.5 pb-1 text-center flex flex-col items-center justify-center shrink-0 border-t border-[var(--border-subtle)] mt-2">
+          <div className="pt-2 pb-1 text-center flex flex-col items-center justify-center shrink-0 border-t border-[var(--border-subtle)] mt-2">
             <div className="flex items-center gap-1.5 text-[13px] font-bold text-[var(--foreground)]">
               <RefreshCw
                 className={`w-3.5 h-3.5 text-emerald-600 ${
@@ -220,7 +225,7 @@ export function EventLoopDiagramStage({
         </div>
 
         {/* ======================================================== */}
-        {/* 3. RIGHT: WebAPIs Container (Timers, FS, Network)        */}
+        {/* 3. RIGHT: WebAPIs Container (3 cols)                     */}
         {/* ======================================================== */}
         <div
           className={`col-span-12 sm:col-span-3 rounded-2xl border p-3 flex flex-col h-full min-h-0 transition-all justify-between ${
