@@ -13,6 +13,7 @@ import {
   Palette,
   CheckSquare,
   ShieldCheck,
+  GitPullRequest,
   ChevronDown,
   X,
 } from 'lucide-react';
@@ -34,6 +35,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
   'realtime-dataviz': <Radio className="w-4 h-4 text-emerald-700 shrink-0" />,
   'design-system': <Palette className="w-4 h-4 text-pink-700 shrink-0" />,
   'testing-qa': <CheckSquare className="w-4 h-4 text-violet-700 shrink-0" />,
+  'devops-cicd': <GitPullRequest className="w-4 h-4 text-amber-700 shrink-0" />,
 };
 
 export function Sidebar({ currentTopic, onSelectTopic, isOpen = true, onClose }: SidebarProps) {

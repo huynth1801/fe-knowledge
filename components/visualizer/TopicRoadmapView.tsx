@@ -56,6 +56,22 @@ const topicDetails: Record<
     interviewPoints: [],
     visualMockupDesc: '',
   },
+  'state-management': {
+    title: 'State Architecture: Server vs Client State',
+    subtitle: 'TanStack Query vs Zustand',
+    icon: <Layers className="w-6 h-6 text-blue-600" />,
+    description: 'Đã sẵn sàng hoạt động.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
+  'cicd-github-actions': {
+    title: 'CI/CD Pipeline & GitHub Actions',
+    subtitle: 'Lint, Test, Build, Preview & Docker',
+    icon: <Sparkles className="w-6 h-6 text-amber-600" />,
+    description: 'Đã sẵn sàng hoạt động.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
   'cors-security': {
     title: 'CORS & Web Security',
     subtitle: 'OPTIONS Preflight & Defense',

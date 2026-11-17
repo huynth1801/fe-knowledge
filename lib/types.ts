@@ -5,6 +5,7 @@ export type TopicId =
   | 'stacking-context'
   | 'fiber-tree'
   | 'react-re-renders'
+  | 'state-management'
   | 'nextjs-rendering'
   | 'rendering-pipeline'
   | 'http-cache'
@@ -14,7 +15,8 @@ export type TopicId =
   | 'design-tokens'
   | 'websocket-realtime'
   | 'dataviz-maps'
-  | 'testing-visual-regression';
+  | 'testing-visual-regression'
+  | 'cicd-github-actions';
 
 export interface TopicCategory {
   id: string;

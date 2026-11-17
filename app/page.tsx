@@ -26,6 +26,9 @@ import { PrototypeStage } from '@/components/visualizer/prototype/PrototypeStage
 import { PrototypeCheatsheet } from '@/components/visualizer/prototype/PrototypeCheatsheet';
 import { ReactRerenderStage } from '@/components/visualizer/react/ReactRerenderStage';
 import { ReactRerenderCheatsheet } from '@/components/visualizer/react/ReactRerenderCheatsheet';
+import { HttpCacheCheatsheet } from '@/components/visualizer/cache/HttpCacheCheatsheet';
+import { StateManagementCheatsheet } from '@/components/visualizer/state/StateManagementCheatsheet';
+import { CiCdCheatsheet } from '@/components/visualizer/cicd/CiCdCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
@@ -69,6 +72,9 @@ export default function Home() {
   // Active Scenarios based on topic
   const isPrototypeTopic = currentTopic === 'prototype';
   const isRerenderTopic = currentTopic === 'react-re-renders';
+  const isStateMgmtTopic = currentTopic === 'state-management';
+  const isHttpCacheTopic = currentTopic === 'http-cache';
+  const isCiCdTopic = currentTopic === 'cicd-github-actions';
   const isTestingTopic = currentTopic === 'testing-visual-regression';
   const isRealtimeTopic = currentTopic === 'websocket-realtime';
   const isDesignTopic = currentTopic === 'design-tokens';
@@ -228,6 +234,12 @@ export default function Home() {
                 <PrototypeCheatsheet />
               ) : isRerenderTopic ? (
                 <ReactRerenderCheatsheet />
+              ) : isStateMgmtTopic ? (
+                <StateManagementCheatsheet />
+              ) : isHttpCacheTopic ? (
+                <HttpCacheCheatsheet />
+              ) : isCiCdTopic ? (
+                <CiCdCheatsheet />
               ) : isNextTopic ? (
                 <NextRenderingCheatsheet />
               ) : isFiberTopic ? (
