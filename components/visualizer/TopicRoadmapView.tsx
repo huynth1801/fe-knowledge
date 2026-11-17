@@ -40,6 +40,38 @@ const topicDetails: Record<
     interviewPoints: [],
     visualMockupDesc: '',
   },
+  'prototype': {
+    title: 'Prototype Chain & this Binding',
+    subtitle: 'Prototypal Delegation & Call-site',
+    icon: <Layers className="w-6 h-6 text-amber-600" />,
+    description: 'Đã sẵn sàng hoạt động.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
+  'react-re-renders': {
+    title: 'React Re-render & Blast Radius',
+    subtitle: 'State Colocation & Memoization',
+    icon: <Atom className="w-6 h-6 text-cyan-600" />,
+    description: 'Đã sẵn sàng hoạt động.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
+  'cors-security': {
+    title: 'CORS & Web Security',
+    subtitle: 'OPTIONS Preflight & Defense',
+    icon: <Box className="w-6 h-6 text-emerald-600" />,
+    description: 'Kế hoạch trực quan hoá luồng mạng preflight OPTIONS và phòng thủ XSS/CSRF.',
+    interviewPoints: ['Tại sao CORS là cơ chế của Trình duyệt chứ không phải Firewall Backend?', 'Khi nào trình duyệt gửi OPTIONS preflight?'],
+    visualMockupDesc: 'Mô phỏng 3 bên: Client JS, Browser Network Layer, Backend Server.',
+  },
+  'virtual-list': {
+    title: 'DOM Virtualization & Windowing',
+    subtitle: 'Rendering 50,000 items',
+    icon: <Layers className="w-6 h-6 text-rose-600" />,
+    description: 'Kế hoạch mô phỏng cơ chế cửa sổ cuộn ảo hoá DOM nodes với translateY buffer.',
+    interviewPoints: ['Lợi ích của DOM Virtualization so với pagination?', 'Cách tính offset top và buffer items.'],
+    visualMockupDesc: 'Khung viewport cuộn chuột với vùng đệm 5 items trên/dưới.',
+  },
   'nextjs-rendering': {
     title: 'SSR vs SSG vs ISR vs RSC',
     subtitle: 'Next.js 16 Rendering Pipeline',
@@ -136,20 +168,6 @@ const topicDetails: Record<
     ],
     visualMockupDesc:
       'Sơ đồ 2 cột: Execution Stack bên trái, Heap Memory Objects bên phải với mũi tên trỏ tham chiếu (Reference pointer).',
-  },
-  'prototype': {
-    title: 'Prototype Chain & Inheritance',
-    subtitle: '__proto__ vs prototype property',
-    icon: <Sparkles className="w-6 h-6 text-purple-600" />,
-    description:
-      'Trực quan hoá chuỗi liên kết Prototype Chain từ instance ngược lên Object.prototype và null khi tìm kiếm một phương thức.',
-    interviewPoints: [
-      'Khác biệt cốt lõi giữa `prototype` (trên Function) và `__proto__` (trên Instance).',
-      'Cách toán tử `new` hoạt động ngầm (4 bước thần thánh).',
-      'Cơ chế kế thừa prototype-based so với class-based truyền thống trong C++/Java.',
-    ],
-    visualMockupDesc:
-      'Biểu đồ chuỗi liên kết các node Object với mũi tên [[Prototype]] hướng lên đỉnh chuỗi.',
   },
   'stacking-context': {
     title: '3D Stacking Context & Z-Index',

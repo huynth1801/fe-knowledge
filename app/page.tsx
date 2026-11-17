@@ -22,6 +22,10 @@ import { WebSocketStage } from '@/components/visualizer/realtime/WebSocketStage'
 import { WebSocketCheatsheet } from '@/components/visualizer/realtime/WebSocketCheatsheet';
 import { TestingStage } from '@/components/visualizer/testing/TestingStage';
 import { TestingCheatsheet } from '@/components/visualizer/testing/TestingCheatsheet';
+import { PrototypeStage } from '@/components/visualizer/prototype/PrototypeStage';
+import { PrototypeCheatsheet } from '@/components/visualizer/prototype/PrototypeCheatsheet';
+import { ReactRerenderStage } from '@/components/visualizer/react/ReactRerenderStage';
+import { ReactRerenderCheatsheet } from '@/components/visualizer/react/ReactRerenderCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
@@ -36,6 +40,8 @@ import { webVitalsScenarios } from '@/lib/scenarios/web-vitals-data';
 import { designTokensScenarios } from '@/lib/scenarios/design-tokens-data';
 import { webSocketScenarios } from '@/lib/scenarios/websocket-realtime-data';
 import { testingScenarios } from '@/lib/scenarios/testing-regression-data';
+import { prototypeScenarios } from '@/lib/scenarios/prototype-chain-data';
+import { reactRerenderScenarios } from '@/lib/scenarios/react-rerender-data';
 import { curriculumCategories } from '@/lib/curriculum';
 import { TopicId } from '@/lib/types';
 
@@ -61,6 +67,8 @@ export default function Home() {
   const hasSimulation = currentTopicMeta?.hasSimulation ?? true;
 
   // Active Scenarios based on topic
+  const isPrototypeTopic = currentTopic === 'prototype';
+  const isRerenderTopic = currentTopic === 'react-re-renders';
   const isTestingTopic = currentTopic === 'testing-visual-regression';
   const isRealtimeTopic = currentTopic === 'websocket-realtime';
   const isDesignTopic = currentTopic === 'design-tokens';
@@ -70,7 +78,11 @@ export default function Home() {
   const isFiberTopic = currentTopic === 'fiber-tree';
   const isClosuresTopic = currentTopic === 'closures';
 
-  const activeScenarios = isTestingTopic
+  const activeScenarios = isPrototypeTopic
+    ? prototypeScenarios
+    : isRerenderTopic
+    ? reactRerenderScenarios
+    : isTestingTopic
     ? testingScenarios
     : isRealtimeTopic
     ? webSocketScenarios
@@ -212,6 +224,10 @@ export default function Home() {
               {/* Render corresponding Cheatsheet */}
               {currentTopic === 'event-loop' ? (
                 <TaskCheatsheet />
+              ) : isPrototypeTopic ? (
+                <PrototypeCheatsheet />
+              ) : isRerenderTopic ? (
+                <ReactRerenderCheatsheet />
               ) : isNextTopic ? (
                 <NextRenderingCheatsheet />
               ) : isFiberTopic ? (
@@ -280,6 +296,10 @@ export default function Home() {
                     scenarioTitle={
                       isRealtimeTopic
                         ? `socket-stream.ts`
+                        : isPrototypeTopic
+                        ? `prototype-chain-${selectedScenarioIndex + 1}.js`
+                        : isRerenderTopic
+                        ? `re-render-tree-${selectedScenarioIndex + 1}.tsx`
                         : isVitalsTopic
                         ? `perf-task-${selectedScenarioIndex + 1}.js`
                         : isCssTopic
@@ -340,6 +360,16 @@ export default function Home() {
                     <ReactFiberStage
                       state={currentStep.state as any}
                       className="flex-1 min-h-0"
+                    />
+                  ) : isRerenderTopic ? (
+                    <ReactRerenderStage
+                      currentStep={currentStep as any}
+                      scenarioIndex={selectedScenarioIndex}
+                    />
+                  ) : isPrototypeTopic ? (
+                    <PrototypeStage
+                      currentStep={currentStep as any}
+                      scenarioIndex={selectedScenarioIndex}
                     />
                   ) : isClosuresTopic ? (
                     <ClosureStage

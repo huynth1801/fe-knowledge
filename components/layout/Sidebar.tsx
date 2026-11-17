@@ -12,6 +12,7 @@ import {
   Radio,
   Palette,
   CheckSquare,
+  ShieldCheck,
   ChevronDown,
   X,
 } from 'lucide-react';
@@ -26,6 +27,7 @@ interface SidebarProps {
 const categoryIcons: Record<string, React.ReactNode> = {
   'js-engine': <Settings2 className="w-4 h-4 text-zinc-600 shrink-0" />,
   'react-internals': <Atom className="w-4 h-4 text-cyan-700 shrink-0" />,
+  'network-security': <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />,
   'nextjs-architecture': <Globe className="w-4 h-4 text-blue-700 shrink-0" />,
   'css-mechanics': <Box className="w-4 h-4 text-indigo-700 shrink-0" />,
   'perf-vitals': <Activity className="w-4 h-4 text-rose-700 shrink-0" />,
