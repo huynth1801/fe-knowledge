@@ -8,7 +8,6 @@ import { TopicsListSection } from '@/components/landing/TopicsListSection';
 import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
 import { BeforeAfterSection } from '@/components/landing/BeforeAfterSection';
 import { ProofNumbersSection } from '@/components/landing/ProofNumbersSection';
-import { PricingSection } from '@/components/landing/PricingSection';
 import { FaqSection } from '@/components/landing/FaqSection';
 import { ClosingCtaSection } from '@/components/landing/ClosingCtaSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
@@ -95,22 +94,17 @@ export default function LandingPage() {
         <ProofNumbersSection />
 
         {/* ======================================================== */}
-        {/* 8. PRICING                                               */}
-        {/* ======================================================== */}
-        <PricingSection />
-
-        {/* ======================================================== */}
-        {/* 9. FAQ                                                   */}
+        {/* 8. FAQ                                                   */}
         {/* ======================================================== */}
         <FaqSection />
 
         {/* ======================================================== */}
-        {/* 10. CLOSING CTA                                          */}
+        {/* 9. CLOSING CTA                                           */}
         {/* ======================================================== */}
         <ClosingCtaSection />
       </main>
 
-      {/* 11. Footer */}
+      {/* 10. Footer */}
       <LandingFooter />
     </div>
   );
