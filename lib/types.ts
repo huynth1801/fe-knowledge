@@ -24,6 +24,8 @@ export interface TopicCategory {
     level: 'Junior' | 'Mid' | 'Senior';
     isReady: boolean;
     badge?: string;
+    hasSimulation?: boolean;
+    estimatedMinutes?: number;
   }[];
 }
 
