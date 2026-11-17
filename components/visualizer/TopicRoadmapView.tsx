@@ -40,6 +40,14 @@ const topicDetails: Record<
     interviewPoints: [],
     visualMockupDesc: '',
   },
+  'nextjs-rendering': {
+    title: 'SSR vs SSG vs ISR vs RSC',
+    subtitle: 'Next.js 16 Rendering Pipeline',
+    icon: <Globe className="w-6 h-6 text-blue-600" />,
+    description: 'Đã sẵn sàng hoạt động.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
   'core-web-vitals': {
     title: 'Core Web Vitals & Main Thread Optimization',
     subtitle: 'LCP, INP, CLS & Long Tasks Simulator',

@@ -4,6 +4,7 @@ export type TopicId =
   | 'prototype'
   | 'stacking-context'
   | 'fiber-tree'
+  | 'nextjs-rendering'
   | 'rendering-pipeline'
   | 'http-cache'
   | 'core-web-vitals'

@@ -10,6 +10,18 @@ import { ClosureStage } from '@/components/visualizer/closures/ClosureStage';
 import { ClosureCheatsheet } from '@/components/visualizer/closures/ClosureCheatsheet';
 import { ReactFiberStage } from '@/components/visualizer/react/ReactFiberStage';
 import { ReactCheatsheet } from '@/components/visualizer/react/ReactCheatsheet';
+import { NextRenderingStage } from '@/components/visualizer/nextjs/NextRenderingStage';
+import { NextRenderingCheatsheet } from '@/components/visualizer/nextjs/NextRenderingCheatsheet';
+import { StackingContextStage } from '@/components/visualizer/css/StackingContextStage';
+import { StackingContextCheatsheet } from '@/components/visualizer/css/StackingContextCheatsheet';
+import { WebVitalsStage } from '@/components/visualizer/perf/WebVitalsStage';
+import { WebVitalsCheatsheet } from '@/components/visualizer/perf/WebVitalsCheatsheet';
+import { DesignTokensStage } from '@/components/visualizer/design/DesignTokensStage';
+import { DesignTokensCheatsheet } from '@/components/visualizer/design/DesignTokensCheatsheet';
+import { WebSocketStage } from '@/components/visualizer/realtime/WebSocketStage';
+import { WebSocketCheatsheet } from '@/components/visualizer/realtime/WebSocketCheatsheet';
+import { TestingStage } from '@/components/visualizer/testing/TestingStage';
+import { TestingCheatsheet } from '@/components/visualizer/testing/TestingCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
@@ -18,6 +30,12 @@ import { TopicRoadmapView } from '@/components/visualizer/TopicRoadmapView';
 import { eventLoopScenarios } from '@/lib/scenarios/event-loop-data';
 import { closureScenarios } from '@/lib/scenarios/closure-data';
 import { reactFiberScenarios } from '@/lib/scenarios/react-fiber-data';
+import { nextjsRenderingScenarios } from '@/lib/scenarios/nextjs-rendering-data';
+import { stackingContextScenarios } from '@/lib/scenarios/stacking-context-data';
+import { webVitalsScenarios } from '@/lib/scenarios/web-vitals-data';
+import { designTokensScenarios } from '@/lib/scenarios/design-tokens-data';
+import { webSocketScenarios } from '@/lib/scenarios/websocket-realtime-data';
+import { testingScenarios } from '@/lib/scenarios/testing-regression-data';
 import { TopicId } from '@/lib/types';
 
 export default function Home() {
@@ -31,10 +49,28 @@ export default function Home() {
   const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
 
   // Active Scenarios based on topic
+  const isTestingTopic = currentTopic === 'testing-visual-regression';
+  const isRealtimeTopic = currentTopic === 'websocket-realtime';
+  const isDesignTopic = currentTopic === 'design-tokens';
+  const isVitalsTopic = currentTopic === 'core-web-vitals';
+  const isCssTopic = currentTopic === 'stacking-context';
+  const isNextTopic = currentTopic === 'nextjs-rendering';
   const isFiberTopic = currentTopic === 'fiber-tree';
   const isClosuresTopic = currentTopic === 'closures';
-  
-  const activeScenarios = isFiberTopic
+
+  const activeScenarios = isTestingTopic
+    ? testingScenarios
+    : isRealtimeTopic
+    ? webSocketScenarios
+    : isDesignTopic
+    ? designTokensScenarios
+    : isVitalsTopic
+    ? webVitalsScenarios
+    : isCssTopic
+    ? stackingContextScenarios
+    : isNextTopic
+    ? nextjsRenderingScenarios
+    : isFiberTopic
     ? reactFiberScenarios
     : isClosuresTopic
     ? closureScenarios
@@ -107,7 +143,15 @@ export default function Home() {
   };
 
   const isInteractiveTopicReady =
-    currentTopic === 'event-loop' || currentTopic === 'closures' || currentTopic === 'fiber-tree';
+    currentTopic === 'event-loop' ||
+    currentTopic === 'closures' ||
+    currentTopic === 'fiber-tree' ||
+    currentTopic === 'nextjs-rendering' ||
+    currentTopic === 'stacking-context' ||
+    currentTopic === 'core-web-vitals' ||
+    currentTopic === 'design-tokens' ||
+    currentTopic === 'websocket-realtime' ||
+    currentTopic === 'testing-visual-regression';
 
   return (
     <div className="h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
@@ -119,14 +163,38 @@ export default function Home() {
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         activeTopicTitle={scenario.title}
         cheatsheetLabel={
-          isFiberTopic
+          isTestingTopic
+            ? 'Sổ tay Testing & QA'
+            : isRealtimeTopic
+            ? 'Sổ tay WebSocket & Viz'
+            : isDesignTopic
+            ? 'Sổ tay Design System'
+            : isVitalsTopic
+            ? 'Sổ tay Web Vitals'
+            : isCssTopic
+            ? 'Sổ tay 3D Z-Index'
+            : isNextTopic
+            ? 'Sổ tay Next.js SSR'
+            : isFiberTopic
             ? 'Sổ tay React Fiber'
             : isClosuresTopic
             ? 'Sổ tay Closures'
             : 'Sổ tay Micro / Macrotask'
         }
         runtimeBadge={
-          isFiberTopic
+          isTestingTopic
+            ? 'Playwright Test Runner'
+            : isRealtimeTopic
+            ? 'RFC 6455 Engine'
+            : isDesignTopic
+            ? 'Design Tokens W3C'
+            : isVitalsTopic
+            ? 'Chrome CrUX'
+            : isCssTopic
+            ? 'Blink Compositor'
+            : isNextTopic
+            ? 'Next.js 16 App Router'
+            : isFiberTopic
             ? 'React 19 Reconciler'
             : 'V8 Runtime'
         }
@@ -161,14 +229,38 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-2">
                 <div>
                   <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[var(--foreground)] tracking-tight">
-                    {isFiberTopic
+                    {isTestingTopic
+                      ? 'Visual Regression & E2E Testing'
+                      : isRealtimeTopic
+                      ? 'WebSocket Lifecycle & Data Viz Engine'
+                      : isDesignTopic
+                      ? 'Design Tokens & Component Architecture'
+                      : isVitalsTopic
+                      ? 'Core Web Vitals & Main Thread'
+                      : isCssTopic
+                      ? '3D Stacking Context & Z-Index'
+                      : isNextTopic
+                      ? 'Next.js: SSR, SSG, ISR & RSC'
+                      : isFiberTopic
                       ? 'React Fiber & Reconciliation'
                       : isClosuresTopic
                       ? 'Closures & Scope Chain'
                       : 'Microtask vs Macrotask'}
                   </h1>
                   <p className="text-[17px] text-[var(--muted)] mt-1.5 leading-relaxed">
-                    {isFiberTopic
+                    {isTestingTopic
+                      ? 'Tài liệu cô đọng: Pixel-by-pixel Diffing, 6 Tiêu chuẩn Actionability Playwright và Testing Trophy.'
+                      : isRealtimeTopic
+                      ? 'Tài liệu cô đọng: Vòng đời WebSocket 101, Exponential Backoff và so sánh SVG vs Canvas vs WebGL.'
+                      : isDesignTopic
+                      ? 'Tài liệu cô đọng: 3 tầng Tokens, Compound Components Pattern, Storybook và kiểm thử a11y.'
+                      : isVitalsTopic
+                      ? 'Tài liệu cô đọng: 3 chỉ số vàng INP, LCP, CLS, kỹ thuật chia nhỏ tác vụ và bẫy phỏng vấn.'
+                      : isCssTopic
+                      ? 'Tài liệu cô đọng: 7 tầng phân lớp chuẩn W3C, thuộc tính kích hoạt ngầm và bẫy z-index.'
+                      : isNextTopic
+                      ? 'Tài liệu cô đọng: So sánh SSR, SSG, ISR, cơ chế Streaming HTML và các bẫy phỏng vấn Hydration.'
+                      : isFiberTopic
                       ? 'Tài liệu cô đọng: Kiến trúc Fiber Dual Buffering, thuật toán Diffing và quy tắc Hooks.'
                       : isClosuresTopic
                       ? 'Tài liệu cô đọng: Cơ chế bộ nhớ Heap, Scope Chain và các bẫy phỏng vấn Closures.'
@@ -185,7 +277,19 @@ export default function Home() {
               </div>
 
               {/* Render corresponding Cheatsheet */}
-              {isFiberTopic ? (
+              {isTestingTopic ? (
+                <TestingCheatsheet />
+              ) : isRealtimeTopic ? (
+                <WebSocketCheatsheet />
+              ) : isDesignTopic ? (
+                <DesignTokensCheatsheet />
+              ) : isVitalsTopic ? (
+                <WebVitalsCheatsheet />
+              ) : isCssTopic ? (
+                <StackingContextCheatsheet />
+              ) : isNextTopic ? (
+                <NextRenderingCheatsheet />
+              ) : isFiberTopic ? (
                 <ReactCheatsheet />
               ) : isClosuresTopic ? (
                 <ClosureCheatsheet />
@@ -239,7 +343,19 @@ export default function Home() {
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
                     scenarioTitle={
-                      isFiberTopic
+                      isTestingTopic
+                        ? `button.spec.ts`
+                        : isRealtimeTopic
+                        ? `socket-stream.ts`
+                        : isDesignTopic
+                        ? `tokens-schema-${selectedScenarioIndex + 1}.css`
+                        : isVitalsTopic
+                        ? `perf-task-${selectedScenarioIndex + 1}.js`
+                        : isCssTopic
+                        ? `style-${selectedScenarioIndex + 1}.css`
+                        : isNextTopic
+                        ? `page-${selectedScenarioIndex + 1}.tsx`
+                        : isFiberTopic
                         ? `counter-app-${selectedScenarioIndex + 1}.tsx`
                         : `scenario-${selectedScenarioIndex + 1}.js`
                     }
@@ -269,7 +385,37 @@ export default function Home() {
                   />
 
                   {/* Render Visual Stage according to Topic */}
-                  {isFiberTopic ? (
+                  {isTestingTopic ? (
+                    <TestingStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isRealtimeTopic ? (
+                    <WebSocketStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isDesignTopic ? (
+                    <DesignTokensStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isVitalsTopic ? (
+                    <WebVitalsStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isCssTopic ? (
+                    <StackingContextStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isNextTopic ? (
+                    <NextRenderingStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : isFiberTopic ? (
                     <ReactFiberStage
                       state={currentStep.state as any}
                       className="flex-1 min-h-0"
