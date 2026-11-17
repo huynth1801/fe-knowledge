@@ -42,7 +42,13 @@ import { TopicId } from '@/lib/types';
 export default function Home() {
   const [currentTopic, setCurrentTopic] = useState<TopicId>('event-loop');
   const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('cheatsheet');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      setIsSidebarOpen(true);
+    }
+  }, []);
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -182,26 +188,27 @@ export default function Home() {
           currentTopic={currentTopic}
           onSelectTopic={handleSelectTopic}
           isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
         />
 
         {/* Main Content Area */}
         <main
           className={`flex-1 overflow-hidden transition-all duration-200 ${
             activeView === 'cheatsheet' || !hasSimulation || !isInteractiveTopicReady
-              ? 'overflow-y-auto p-6 sm:p-8 bg-white'
+              ? 'overflow-y-auto p-4 sm:p-6 md:p-8 bg-white'
               : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-53px)] bg-[#FAF8F5]'
           }`}
         >
           {!isInteractiveTopicReady ? (
-            <div className="max-w-5xl mx-auto w-full">
+            <section className="wrap max-w-5xl mx-auto w-full">
               <TopicRoadmapView
                 topicId={currentTopic}
                 onBackToEventLoop={() => handleSelectTopic('event-loop')}
               />
-            </div>
+            </section>
           ) : activeView === 'cheatsheet' || !hasSimulation ? (
             /* Dedicated Cheatsheet Mode matching pen.dev design */
-            <div className="max-w-4xl mx-auto w-full space-y-6 animate-in fade-in">
+            <section className="wrap max-w-4xl mx-auto w-full space-y-6 animate-in fade-in" aria-label="Nội dung bài học">
               {/* Render corresponding Cheatsheet */}
               {currentTopic === 'event-loop' ? (
                 <TaskCheatsheet />
@@ -224,7 +231,7 @@ export default function Home() {
               ) : (
                 <TaskCheatsheet />
               )}
-            </div>
+            </section>
           ) : (
             /* 100% SINGLE-VIEWPORT WORKBENCH (Chỉ dành cho các chủ đề ĐÁNG VISUALIZE) */
             <div className="flex-1 flex flex-col gap-2.5 min-h-0 w-full animate-in fade-in">
