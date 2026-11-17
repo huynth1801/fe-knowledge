@@ -13,10 +13,11 @@ import { PredictModal } from '@/components/visualizer/PredictModal';
 import { TopicRoadmapView } from '@/components/visualizer/TopicRoadmapView';
 import { eventLoopScenarios } from '@/lib/scenarios/event-loop-data';
 import { TopicId } from '@/lib/types';
-import { Code, Flame } from 'lucide-react';
+import { Code, Flame, Sparkles, BookOpen } from 'lucide-react';
 
 export default function Home() {
   const [currentTopic, setCurrentTopic] = useState<TopicId>('event-loop');
+  const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('simulation');
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -31,7 +32,6 @@ export default function Home() {
   useEffect(() => {
     if (!isPlaying) return;
 
-    // Interval time based on speed: 1x = 1200ms, 1.5x = 800ms, 2x = 600ms, 0.5x = 2400ms
     const intervalDuration = Math.round(1200 / playbackSpeed);
 
     const timer = setInterval(() => {
@@ -85,15 +85,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-      {/* Top Bar */}
+      {/* Top Header with Segmented View Switcher */}
       <Header
-        activeTopicTitle={
-          currentTopic === 'event-loop' ? scenario.title : currentTopic
-        }
+        activeView={activeView}
+        onSelectView={setActiveView}
+        activeTopicTitle={scenario.title}
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Navigation Sidebar */}
+        {/* Left Topic Navigation Sidebar */}
         <Sidebar
           currentTopic={currentTopic}
           onSelectTopic={(id) => {
@@ -102,103 +102,86 @@ export default function Home() {
           }}
         />
 
-        {/* Main Content Workspace */}
+        {/* Main Content Area */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {currentTopic !== 'event-loop' ? (
             <TopicRoadmapView
               topicId={currentTopic}
               onBackToEventLoop={() => setCurrentTopic('event-loop')}
             />
+          ) : activeView === 'cheatsheet' ? (
+            /* Dedicated Cheatsheet Mode */
+            <div className="space-y-6 animate-in fade-in">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+                <div>
+                  <h1 className="font-serif font-bold text-2xl text-[var(--foreground)] tracking-tight">
+                    Sổ tay tra cứu: Microtask vs Macrotask
+                  </h1>
+                  <p className="text-xs text-[var(--muted)] mt-0.5">
+                    Tài liệu cô đọng dành cho ôn tập phỏng vấn Front-End
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveView('simulation')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--accent)] text-white text-xs font-semibold hover:bg-[var(--accent-hover)] transition-colors cursor-pointer shadow-xs"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Mở Sân khấu mô phỏng</span>
+                </button>
+              </div>
+
+              <TaskCheatsheet />
+            </div>
           ) : (
-            <>
-              {/* Header Title Section */}
-              <div className="space-y-3 pb-2 border-b border-[var(--border)]">
-                <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent-border)] font-semibold flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5 fill-[var(--accent)]" /> Phỏng vấn HOT
-                  </span>
-                  <span className="px-2 py-0.5 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--muted)]">
-                    Độ khó: <strong>{scenario.difficulty}</strong>
-                  </span>
-                  <span className="text-[var(--muted)]">•</span>
-                  <span className="text-[var(--muted)]">{scenario.tagline}</span>
-                </div>
-
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[var(--foreground)] tracking-tight">
+            /* Simulation Workbench Mode (Clean, focused 2-column layout) */
+            <div className="space-y-5 animate-in fade-in">
+              {/* Scenario Selection Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-mono">
+                    <span className="font-serif font-bold text-xl text-[var(--foreground)] tracking-tight">
                       {scenario.title}
-                    </h1>
-                    <p className="text-xs sm:text-sm text-[var(--muted)] mt-1 max-w-3xl leading-relaxed">
-                      {scenario.description}
-                    </p>
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent-border)] font-semibold text-[10px]">
+                      {scenario.difficulty}
+                    </span>
                   </div>
+                  <p className="text-xs text-[var(--muted)] mt-0.5 line-clamp-1">
+                    {scenario.tagline}
+                  </p>
                 </div>
 
-                {/* Scenario Tabs Bar */}
-                <div className="pt-2 flex flex-wrap gap-2">
+                {/* Scenario tabs */}
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-xs font-medium">
                   {eventLoopScenarios.map((sc, idx) => {
                     const isActive = idx === selectedScenarioIndex;
                     return (
                       <button
                         key={sc.id}
                         onClick={() => handleSelectScenario(idx)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 border cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer font-mono text-[11px] ${
                           isActive
-                            ? 'bg-[var(--card)] border-[var(--accent)] text-[var(--accent)] font-semibold shadow-xs'
-                            : 'bg-[var(--card-subtle)] border-[var(--border-subtle)] text-[var(--muted)] hover:text-[var(--foreground)]'
+                            ? 'bg-[var(--card)] text-[var(--accent)] font-bold shadow-2xs border border-[var(--border)]'
+                            : 'text-[var(--muted)] hover:text-[var(--foreground)]'
                         }`}
                       >
-                        <span className="w-4 h-4 rounded-full bg-[var(--border)] text-[10px] flex items-center justify-center font-mono">
-                          {idx + 1}
-                        </span>
-                        <span>{sc.title}</span>
+                        Bài {idx + 1}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Player Controller Bar */}
-              <SimulationPlayer
-                currentStep={currentStepIndex}
-                totalSteps={totalSteps}
-                isPlaying={isPlaying}
-                playbackSpeed={playbackSpeed}
-                onPlayToggle={handlePlayToggle}
-                onStepNext={handleStepNext}
-                onStepPrev={handleStepPrev}
-                onReset={handleReset}
-                onSelectStep={handleSelectStep}
-                onChangeSpeed={(spd) => setPlaybackSpeed(spd)}
-                onOpenPredictModal={() => setIsPredictModalOpen(true)}
-              />
-
-              {/* Interactive Simulation Stage (Event Loop / Call Stack / Queues) */}
-              <EventLoopStage state={currentStep.state} />
-
-              {/* Cheatsheet: What are Microtasks & Macrotasks & Lifecycle */}
-              <TaskCheatsheet />
-
-              {/* Bottom Grid: Code Sync + Explanation + Console Output */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                {/* Left: Code Viewer (5 cols) */}
+              {/* 2-Column Split Workbench */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                {/* Left Column: Code & Thought Process (5 cols) */}
                 <div className="lg:col-span-5 space-y-4">
-                  <div className="flex items-center justify-between text-xs font-mono text-[var(--muted)]">
-                    <span className="flex items-center gap-1.5 font-semibold text-[var(--foreground)]">
-                      <Code className="w-4 h-4 text-[var(--accent)]" /> Mã nguồn đồng bộ theo step
-                    </span>
-                    <span className="text-[11px]">Dòng thực thi tô màu viền cam</span>
-                  </div>
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
                     scenarioTitle={`scenario-${selectedScenarioIndex + 1}.js`}
                   />
-                </div>
 
-                {/* Right: Explanation & Console (7 cols) */}
-                <div className="lg:col-span-7 space-y-4">
                   <ExplanationPanel
                     stepIndex={currentStepIndex}
                     totalSteps={totalSteps}
@@ -209,13 +192,34 @@ export default function Home() {
 
                   <ConsoleCard logs={currentStep.state.consoleLogs} />
                 </div>
+
+                {/* Right Column: Visual Stage & Playback Controller (7 cols) */}
+                <div className="lg:col-span-7 space-y-4">
+                  {/* Simulation Player */}
+                  <SimulationPlayer
+                    currentStep={currentStepIndex}
+                    totalSteps={totalSteps}
+                    isPlaying={isPlaying}
+                    playbackSpeed={playbackSpeed}
+                    onPlayToggle={handlePlayToggle}
+                    onStepNext={handleStepNext}
+                    onStepPrev={handleStepPrev}
+                    onReset={handleReset}
+                    onSelectStep={handleSelectStep}
+                    onChangeSpeed={(spd) => setPlaybackSpeed(spd)}
+                    onOpenPredictModal={() => setIsPredictModalOpen(true)}
+                  />
+
+                  {/* Clean Visual Stage */}
+                  <EventLoopStage state={currentStep.state} />
+                </div>
               </div>
-            </>
+            </div>
           )}
         </main>
       </div>
 
-      {/* Quiz / Predict Modal */}
+      {/* Quiz Modal */}
       <PredictModal
         scenario={scenario}
         isOpen={isPredictModalOpen}

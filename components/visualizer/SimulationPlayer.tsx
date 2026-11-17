@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { Play, Pause, SkipBack, SkipForward, RotateCcw, HelpCircle, Activity } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, RotateCcw, HelpCircle } from 'lucide-react';
 
 interface SimulationPlayerProps {
   currentStep: number;
   totalSteps: number;
   isPlaying: boolean;
-  playbackSpeed: number; // 0.5, 1, 1.5, 2
+  playbackSpeed: number;
   onPlayToggle: () => void;
   onStepNext: () => void;
   onStepPrev: () => void;
@@ -34,14 +34,14 @@ export function SimulationPlayer({
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 sm:p-4 shadow-xs">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Playback action buttons */}
-        <div className="flex items-center gap-2">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-xs space-y-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Controls */}
+        <div className="flex items-center gap-1.5">
           <button
             onClick={onReset}
-            title="Quay lại từ đầu"
-            className="p-2 rounded-lg border border-[var(--border)] hover:bg-[var(--card-subtle)] text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+            title="Quay lại đầu"
+            className="p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -50,28 +50,28 @@ export function SimulationPlayer({
             onClick={onStepPrev}
             disabled={isFirstStep}
             title="Bước trước"
-            className="p-2 rounded-lg border border-[var(--border)] hover:bg-[var(--card-subtle)] disabled:opacity-40 disabled:cursor-not-allowed text-[var(--foreground)] transition-colors"
+            className="p-2 rounded-lg text-[var(--foreground)] hover:bg-[var(--card-subtle)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <SkipBack className="w-4 h-4" />
           </button>
 
           <button
             onClick={onPlayToggle}
-            className={`px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-xs cursor-pointer ${
+            className={`px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
               isPlaying
-                ? 'bg-amber-600 hover:bg-amber-700 text-white ring-2 ring-amber-300 ring-offset-1'
+                ? 'bg-amber-600 hover:bg-amber-700 text-white'
                 : 'bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white'
             }`}
           >
             {isPlaying ? (
               <>
-                <Pause className="w-4 h-4 fill-white" />
+                <Pause className="w-3.5 h-3.5 fill-white" />
                 <span>Tạm dừng</span>
               </>
             ) : (
               <>
-                <Play className="w-4 h-4 fill-white" />
-                <span>{isLastStep ? 'Chạy lại từ đầu' : 'Tự động chạy'}</span>
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>{isLastStep ? 'Chạy lại' : 'Tự động chạy'}</span>
               </>
             )}
           </button>
@@ -80,18 +80,18 @@ export function SimulationPlayer({
             onClick={onStepNext}
             disabled={isLastStep}
             title="Bước tiếp theo"
-            className="p-2 rounded-lg border border-[var(--border)] hover:bg-[var(--card-subtle)] disabled:opacity-40 disabled:cursor-not-allowed text-[var(--foreground)] transition-colors"
+            className="p-2 rounded-lg text-[var(--foreground)] hover:bg-[var(--card-subtle)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <SkipForward className="w-4 h-4" />
           </button>
 
-          {/* Speed Selector */}
-          <div className="flex items-center ml-2 border border-[var(--border)] rounded-lg p-0.5 bg-[var(--card-subtle)] text-xs font-mono">
+          {/* Speed Pills */}
+          <div className="flex items-center ml-2 p-0.5 rounded-lg bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[11px] font-mono">
             {[0.5, 1, 1.5, 2].map((speed) => (
               <button
                 key={speed}
                 onClick={() => onChangeSpeed(speed)}
-                className={`px-2 py-1 rounded font-medium transition-all ${
+                className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
                   playbackSpeed === speed
                     ? 'bg-[var(--card)] text-[var(--accent)] font-bold shadow-2xs'
                     : 'text-[var(--muted)] hover:text-[var(--foreground)]'
@@ -101,64 +101,55 @@ export function SimulationPlayer({
               </button>
             ))}
           </div>
-
-          {/* Live Playing Status indicator */}
-          {isPlaying && (
-            <div className="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-mono animate-pulse">
-              <Activity className="w-3.5 h-3.5 text-amber-600" />
-              <span>Đang phát...</span>
-            </div>
-          )}
         </div>
 
-        {/* Step indicator & Quiz trigger */}
+        {/* Step indicator & Quiz */}
         <div className="flex items-center gap-3">
           {onOpenPredictModal && (
             <button
               onClick={onOpenPredictModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-light)] text-[var(--accent)] text-xs font-medium hover:bg-[var(--accent-light)]/80 transition-colors cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[var(--border)] text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
             >
-              <HelpCircle className="w-3.5 h-3.5" />
-              <span>Đoán Output (Quiz)</span>
+              <HelpCircle className="w-3.5 h-3.5 text-[var(--accent)]" />
+              <span>Đoán Output</span>
             </button>
           )}
 
-          <div className="text-right">
-            <span className="text-xs font-mono text-[var(--muted)]">Bước hiện tại:</span>
-            <span className="ml-1.5 font-mono text-sm font-bold text-[var(--foreground)]">
-              {currentStep + 1} / {totalSteps}
-            </span>
+          <div className="text-xs font-mono">
+            <span className="text-[var(--muted)]">Bước: </span>
+            <strong className="text-[var(--foreground)] font-semibold">
+              {currentStep + 1}
+            </strong>
+            <span className="text-[var(--muted)]"> / {totalSteps}</span>
           </div>
         </div>
       </div>
 
-      {/* Scrubber Timeline Bar */}
-      <div className="mt-3 pt-3 border-t border-[var(--border-subtle)]">
-        <div className="flex items-center gap-1.5">
-          {Array.from({ length: totalSteps }).map((_, idx) => {
-            const isPassed = idx < currentStep;
-            const isCurrent = idx === currentStep;
+      {/* Scrubber timeline */}
+      <div className="flex items-center gap-1 pt-1">
+        {Array.from({ length: totalSteps }).map((_, idx) => {
+          const isPassed = idx < currentStep;
+          const isCurrent = idx === currentStep;
 
-            return (
-              <button
-                key={idx}
-                onClick={() => onSelectStep(idx)}
-                title={`Nhảy tới bước ${idx + 1}`}
-                className="group relative flex-1 h-3 py-1 focus:outline-hidden cursor-pointer"
-              >
-                <div
-                  className={`h-1.5 rounded-full transition-all ${
-                    isCurrent
-                      ? 'bg-[var(--accent)] ring-2 ring-[var(--accent-border)] h-2'
-                      : isPassed
-                      ? 'bg-[var(--foreground)]/50 group-hover:bg-[var(--foreground)]'
-                      : 'bg-[var(--border)] group-hover:bg-[var(--muted)]/40'
-                  }`}
-                />
-              </button>
-            );
-          })}
-        </div>
+          return (
+            <button
+              key={idx}
+              onClick={() => onSelectStep(idx)}
+              title={`Nhảy tới bước ${idx + 1}`}
+              className="flex-1 py-1 group focus:outline-hidden cursor-pointer"
+            >
+              <div
+                className={`h-1 rounded-full transition-all ${
+                  isCurrent
+                    ? 'bg-[var(--accent)] h-1.5'
+                    : isPassed
+                    ? 'bg-[var(--foreground)]/40 group-hover:bg-[var(--foreground)]/70'
+                    : 'bg-[var(--border)] group-hover:bg-[var(--muted)]/50'
+                }`}
+              />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
