@@ -9,6 +9,7 @@ interface ExplanationPanelProps {
   title: string;
   explanation: string;
   interviewInsight?: string;
+  className?: string;
 }
 
 export function ExplanationPanel({
@@ -17,33 +18,33 @@ export function ExplanationPanel({
   title,
   explanation,
   interviewInsight,
+  className = '',
 }: ExplanationPanelProps) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 space-y-3.5 shadow-xs">
+    <div
+      className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 sm:p-4 space-y-2 shadow-xs shrink-0 ${className}`}
+    >
       {/* Title */}
-      <div>
-        <div className="flex items-center gap-1.5 text-[11px] font-mono text-[var(--accent)] font-semibold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Bước {stepIndex + 1} của {totalSteps}</span>
-        </div>
-        <h3 className="font-serif font-bold text-lg text-[var(--foreground)] mt-0.5 leading-snug">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="font-serif font-bold text-[16px] text-[var(--foreground)] leading-snug truncate">
           {title}
         </h3>
+        <span className="text-[12px] font-mono text-[var(--accent)] font-semibold uppercase tracking-wider shrink-0 bg-[var(--accent-light)] px-2 py-0.5 rounded-full border border-[var(--accent-border)]">
+          Bước {stepIndex + 1}/{totalSteps}
+        </span>
       </div>
 
       {/* Main thought */}
-      <p className="text-xs sm:text-[13px] leading-relaxed text-[var(--foreground)] opacity-90">
+      <p className="text-[14px] leading-relaxed text-[var(--foreground)] opacity-90 line-clamp-2">
         {explanation}
       </p>
 
       {/* Interview Insight Callout */}
       {interviewInsight && (
-        <div className="rounded-xl bg-[var(--accent-light)]/60 border border-[var(--accent-border)] p-3 text-xs">
-          <div className="flex items-center gap-1.5 font-semibold text-[var(--accent)] mb-1">
-            <Lightbulb className="w-3.5 h-3.5" />
-            <span className="font-serif font-bold">Góc nhìn phỏng vấn</span>
-          </div>
-          <p className="text-[12px] text-[var(--foreground)] leading-relaxed">
+        <div className="rounded-xl bg-[var(--accent-light)]/50 border border-[var(--accent-border)] px-3 py-1.5 text-[13px] flex items-start gap-2">
+          <Lightbulb className="w-4 h-4 text-[var(--accent)] shrink-0 mt-0.5" />
+          <p className="text-[13px] text-[var(--foreground)] leading-snug line-clamp-2">
+            <strong className="font-serif font-bold text-[var(--accent)]">Tip phỏng vấn: </strong>
             {interviewInsight}
           </p>
         </div>

@@ -16,7 +16,7 @@ import { TopicId } from '@/lib/types';
 
 export default function Home() {
   const [currentTopic, setCurrentTopic] = useState<TopicId>('event-loop');
-  const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('cheatsheet');
+  const [activeView, setActiveView] = useState<'simulation' | 'cheatsheet'>('simulation');
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -83,8 +83,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-      {/* Top Header with Segmented View Switcher */}
+    <div className="h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
+      {/* Top Header */}
       <Header
         activeView={activeView}
         onSelectView={setActiveView}
@@ -102,15 +102,23 @@ export default function Home() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-5 sm:p-8 space-y-6 max-w-6xl mx-auto w-full">
+        <main
+          className={`flex-1 overflow-hidden ${
+            activeView === 'cheatsheet' || currentTopic !== 'event-loop'
+              ? 'overflow-y-auto p-6 sm:p-8'
+              : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-65px)]'
+          }`}
+        >
           {currentTopic !== 'event-loop' ? (
-            <TopicRoadmapView
-              topicId={currentTopic}
-              onBackToEventLoop={() => setCurrentTopic('event-loop')}
-            />
+            <div className="max-w-5xl mx-auto w-full">
+              <TopicRoadmapView
+                topicId={currentTopic}
+                onBackToEventLoop={() => setCurrentTopic('event-loop')}
+              />
+            </div>
           ) : activeView === 'cheatsheet' ? (
-            /* Dedicated Cheatsheet Mode (Matching the exact uploaded screenshot) */
-            <div className="space-y-6 animate-in fade-in">
+            /* Dedicated Cheatsheet Mode */
+            <div className="max-w-5xl mx-auto w-full space-y-6 animate-in fade-in">
               {/* Header Title & CTA Button */}
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-2">
                 <div>
@@ -134,33 +142,31 @@ export default function Home() {
               <TaskCheatsheet />
             </div>
           ) : (
-            /* Simulation Workbench Mode (Clean, focused 2-column layout) */
-            <div className="space-y-5 animate-in fade-in">
-              {/* Scenario Selection Bar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-serif font-bold text-2xl text-[var(--foreground)] tracking-tight">
-                      {scenario.title}
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent-border)] font-semibold text-[11px] font-mono">
-                      {scenario.difficulty}
-                    </span>
-                  </div>
-                  <p className="text-[15px] text-[var(--muted)] mt-0.5 line-clamp-1">
-                    {scenario.tagline}
-                  </p>
+            /* 100% SINGLE-VIEWPORT WORKBENCH (No page scroll needed!) */
+            <div className="flex-1 flex flex-col gap-2.5 min-h-0 w-full animate-in fade-in">
+              {/* Top Compact Scenario Selection Bar */}
+              <div className="flex items-center justify-between gap-3 shrink-0 pb-1 border-b border-[var(--border-subtle)]">
+                <div className="flex items-center gap-2.5">
+                  <h1 className="font-serif font-bold text-[18px] text-[var(--foreground)] tracking-tight">
+                    {scenario.title}
+                  </h1>
+                  <span className="px-2 py-0.2 rounded-full bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent-border)] font-semibold text-[11px] font-mono">
+                    {scenario.difficulty}
+                  </span>
+                  <span className="text-[13px] text-[var(--muted)] hidden md:inline">
+                    • {scenario.tagline}
+                  </span>
                 </div>
 
                 {/* Scenario tabs */}
-                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[14px] font-medium">
+                <div className="flex items-center gap-1 p-0.5 rounded-xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[13px]">
                   {eventLoopScenarios.map((sc, idx) => {
                     const isActive = idx === selectedScenarioIndex;
                     return (
                       <button
                         key={sc.id}
                         onClick={() => handleSelectScenario(idx)}
-                        className={`px-3 py-1 rounded-lg transition-all cursor-pointer font-mono text-[13px] ${
+                        className={`px-2.5 py-0.5 rounded-lg transition-all cursor-pointer font-mono text-[12px] ${
                           isActive
                             ? 'bg-[var(--card)] text-[var(--accent)] font-bold shadow-2xs border border-[var(--border)]'
                             : 'text-[var(--muted)] hover:text-[var(--foreground)]'
@@ -173,30 +179,28 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* 2-Column Split Workbench */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                {/* Left Column: Code & Thought Process (5 cols) */}
-                <div className="lg:col-span-5 space-y-4">
+              {/* 2-Column Grid filling remaining height */}
+              <div className="flex-1 min-h-0 grid grid-cols-12 gap-3.5 items-stretch">
+                {/* Left Column: Code (Top) + Live Console Terminal (Bottom) */}
+                <div className="col-span-12 lg:col-span-5 flex flex-col gap-3 min-h-0 h-full">
+                  {/* Code Viewer: flex-[3] */}
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
                     scenarioTitle={`scenario-${selectedScenarioIndex + 1}.js`}
+                    className="flex-[3] min-h-[180px]"
                   />
 
-                  <ExplanationPanel
-                    stepIndex={currentStepIndex}
-                    totalSteps={totalSteps}
-                    title={currentStep.title}
-                    explanation={currentStep.explanation}
-                    interviewInsight={currentStep.interviewInsight}
+                  {/* Console Terminal: flex-[2], always visible! */}
+                  <ConsoleCard
+                    logs={currentStep.state.consoleLogs}
+                    className="flex-[2] min-h-[140px]"
                   />
-
-                  <ConsoleCard logs={currentStep.state.consoleLogs} />
                 </div>
 
-                {/* Right Column: Visual Stage & Playback Controller (7 cols) */}
-                <div className="lg:col-span-7 space-y-4">
-                  {/* Simulation Player */}
+                {/* Right Column: Player + Event Loop Stage + Explanation Panel */}
+                <div className="col-span-12 lg:col-span-7 flex flex-col gap-3 min-h-0 h-full">
+                  {/* Player Controller Bar */}
                   <SimulationPlayer
                     currentStep={currentStepIndex}
                     totalSteps={totalSteps}
@@ -211,8 +215,20 @@ export default function Home() {
                     onOpenPredictModal={() => setIsPredictModalOpen(true)}
                   />
 
-                  {/* Clean Visual Stage */}
-                  <EventLoopStage state={currentStep.state} />
+                  {/* 2x2 Event Loop Stage (Call Stack, Web APIs, Microtasks, Macrotasks) */}
+                  <EventLoopStage
+                    state={currentStep.state}
+                    className="flex-1 min-h-0"
+                  />
+
+                  {/* Step Explanation & Interview Tip */}
+                  <ExplanationPanel
+                    stepIndex={currentStepIndex}
+                    totalSteps={totalSteps}
+                    title={currentStep.title}
+                    explanation={currentStep.explanation}
+                    interviewInsight={currentStep.interviewInsight}
+                  />
                 </div>
               </div>
             </div>

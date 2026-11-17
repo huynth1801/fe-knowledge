@@ -15,6 +15,7 @@ interface SimulationPlayerProps {
   onSelectStep: (step: number) => void;
   onChangeSpeed: (speed: number) => void;
   onOpenPredictModal?: () => void;
+  className?: string;
 }
 
 export function SimulationPlayer({
@@ -29,19 +30,22 @@ export function SimulationPlayer({
   onSelectStep,
   onChangeSpeed,
   onOpenPredictModal,
+  className = '',
 }: SimulationPlayerProps) {
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-xs space-y-3">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div
+      className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-xs space-y-2 shrink-0 ${className}`}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         {/* Controls */}
         <div className="flex items-center gap-1.5">
           <button
             onClick={onReset}
             title="Quay lại đầu"
-            className="p-2 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
           </button>
@@ -50,14 +54,14 @@ export function SimulationPlayer({
             onClick={onStepPrev}
             disabled={isFirstStep}
             title="Bước trước"
-            className="p-2 rounded-lg text-[var(--foreground)] hover:bg-[var(--card-subtle)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--foreground)] hover:bg-[var(--card-subtle)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <SkipBack className="w-4 h-4" />
           </button>
 
           <button
             onClick={onPlayToggle}
-            className={`px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
+            className={`px-3.5 py-1.5 rounded-lg text-[13px] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
               isPlaying
                 ? 'bg-amber-600 hover:bg-amber-700 text-white'
                 : 'bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white'
@@ -80,7 +84,7 @@ export function SimulationPlayer({
             onClick={onStepNext}
             disabled={isLastStep}
             title="Bước tiếp theo"
-            className="p-2 rounded-lg text-[var(--foreground)] hover:bg-[var(--card-subtle)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--foreground)] hover:bg-[var(--card-subtle)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
             <SkipForward className="w-4 h-4" />
           </button>
@@ -108,14 +112,14 @@ export function SimulationPlayer({
           {onOpenPredictModal && (
             <button
               onClick={onOpenPredictModal}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[var(--border)] text-xs text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg border border-[var(--border)] text-[12px] text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
             >
               <HelpCircle className="w-3.5 h-3.5 text-[var(--accent)]" />
               <span>Đoán Output</span>
             </button>
           )}
 
-          <div className="text-xs font-mono">
+          <div className="text-[13px] font-mono">
             <span className="text-[var(--muted)]">Bước: </span>
             <strong className="text-[var(--foreground)] font-semibold">
               {currentStep + 1}
@@ -126,7 +130,7 @@ export function SimulationPlayer({
       </div>
 
       {/* Scrubber timeline */}
-      <div className="flex items-center gap-1 pt-1">
+      <div className="flex items-center gap-1 pt-0.5">
         {Array.from({ length: totalSteps }).map((_, idx) => {
           const isPassed = idx < currentStep;
           const isCurrent = idx === currentStep;

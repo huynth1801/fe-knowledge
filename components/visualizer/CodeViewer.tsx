@@ -7,9 +7,15 @@ interface CodeViewerProps {
   code: string;
   activeLines: number[];
   scenarioTitle?: string;
+  className?: string;
 }
 
-export function CodeViewer({ code, activeLines, scenarioTitle }: CodeViewerProps) {
+export function CodeViewer({
+  code,
+  activeLines,
+  scenarioTitle,
+  className = '',
+}: CodeViewerProps) {
   const [copied, setCopied] = useState(false);
   const lines = code.split('\n');
 
@@ -20,36 +26,38 @@ export function CodeViewer({ code, activeLines, scenarioTitle }: CodeViewerProps
   };
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[#1F1E1D] text-[#EBE6DE] overflow-hidden flex flex-col shadow-xs">
+    <div
+      className={`rounded-2xl border border-[var(--border)] bg-[#1F1E1D] text-[#EBE6DE] overflow-hidden flex flex-col shadow-xs ${className}`}
+    >
       {/* Code Header */}
-      <div className="px-4 py-2.5 bg-[#2A2826] border-b border-[#3B3835] flex items-center justify-between">
+      <div className="px-4 py-2 bg-[#2A2826] border-b border-[#3B3835] flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <Code2 className="w-4 h-4 text-[var(--accent)]" />
-          <span className="text-xs font-mono font-medium text-[#D1CCC4]">
+          <span className="text-[13px] font-mono font-medium text-[#D1CCC4]">
             {scenarioTitle || 'script.js'}
           </span>
         </div>
 
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-[11px] font-mono px-2 py-1 rounded bg-[#363330] hover:bg-[#433F3B] text-[#BFB8AE] transition-colors"
+          className="flex items-center gap-1.5 text-[12px] font-mono px-2 py-0.5 rounded bg-[#363330] hover:bg-[#433F3B] text-[#BFB8AE] transition-colors cursor-pointer"
         >
           {copied ? (
             <>
-              <Check className="w-3 h-3 text-emerald-400" />
-              <span>Đã sao chép</span>
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Đã chép</span>
             </>
           ) : (
             <>
-              <Copy className="w-3 h-3" />
-              <span>Sao chép</span>
+              <Copy className="w-3.5 h-3.5" />
+              <span>Chép code</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Code Body */}
-      <div className="p-3 font-mono text-xs overflow-x-auto leading-relaxed">
+      {/* Code Body - Scrollable */}
+      <div className="p-3 font-mono text-[13px] overflow-y-auto overflow-x-auto leading-relaxed flex-1">
         {lines.map((lineText, idx) => {
           const lineNumber = idx + 1;
           const isActive = activeLines.includes(lineNumber);
@@ -65,7 +73,7 @@ export function CodeViewer({ code, activeLines, scenarioTitle }: CodeViewerProps
             >
               {/* Line number */}
               <span
-                className={`w-6 shrink-0 text-right select-none text-[11px] ${
+                className={`w-5 shrink-0 text-right select-none text-[12px] ${
                   isActive ? 'text-[var(--accent)] font-bold' : 'text-[#69645E]'
                 }`}
               >
