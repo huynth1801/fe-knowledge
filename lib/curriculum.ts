@@ -19,7 +19,8 @@ export const curriculumCategories: TopicCategory[] = [
         title: 'Closures & Scope Chain',
         subtitle: 'Lexical Environment & Heap Memory Allocation',
         level: 'Junior',
-        isReady: false,
+        isReady: true,
+        badge: 'Cốt lõi',
       },
       {
         id: 'prototype',

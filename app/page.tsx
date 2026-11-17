@@ -6,12 +6,15 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { SimulationPlayer } from '@/components/visualizer/SimulationPlayer';
 import { EventLoopDiagramStage } from '@/components/visualizer/EventLoopDiagramStage';
 import { TaskCheatsheet } from '@/components/visualizer/TaskCheatsheet';
+import { ClosureStage } from '@/components/visualizer/closures/ClosureStage';
+import { ClosureCheatsheet } from '@/components/visualizer/closures/ClosureCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
 import { ConsoleCard } from '@/components/visualizer/ConsoleCard';
 import { PredictModal } from '@/components/visualizer/PredictModal';
 import { TopicRoadmapView } from '@/components/visualizer/TopicRoadmapView';
 import { eventLoopScenarios } from '@/lib/scenarios/event-loop-data';
+import { closureScenarios } from '@/lib/scenarios/closure-data';
 import { TopicId } from '@/lib/types';
 
 export default function Home() {
@@ -24,9 +27,12 @@ export default function Home() {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
 
-  const scenario = eventLoopScenarios[selectedScenarioIndex];
+  // Active Scenarios based on topic
+  const isClosuresTopic = currentTopic === 'closures';
+  const activeScenarios = isClosuresTopic ? closureScenarios : eventLoopScenarios;
+  const scenario = activeScenarios[selectedScenarioIndex] || activeScenarios[0];
   const totalSteps = scenario.steps.length;
-  const currentStep = scenario.steps[currentStepIndex];
+  const currentStep = scenario.steps[currentStepIndex] || scenario.steps[0];
 
   // Auto-play interval engine
   useEffect(() => {
@@ -48,6 +54,13 @@ export default function Home() {
   }, [isPlaying, playbackSpeed, totalSteps]);
 
   // Actions
+  const handleSelectTopic = (id: TopicId) => {
+    setIsPlaying(false);
+    setCurrentTopic(id);
+    setSelectedScenarioIndex(0);
+    setCurrentStepIndex(0);
+  };
+
   const handleSelectScenario = (index: number) => {
     setIsPlaying(false);
     setSelectedScenarioIndex(index);
@@ -83,6 +96,8 @@ export default function Home() {
     }
   };
 
+  const isInteractiveTopicReady = currentTopic === 'event-loop' || currentTopic === 'closures';
+
   return (
     <div className="h-screen flex flex-col bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
       {/* Top Header with Sidebar Toggle button */}
@@ -98,39 +113,37 @@ export default function Home() {
         {/* Collapsible Left Topic Navigation Sidebar */}
         <Sidebar
           currentTopic={currentTopic}
-          onSelectTopic={(id) => {
-            setIsPlaying(false);
-            setCurrentTopic(id);
-          }}
+          onSelectTopic={handleSelectTopic}
           isOpen={isSidebarOpen}
         />
 
         {/* Main Content Area */}
         <main
           className={`flex-1 overflow-hidden transition-all duration-200 ${
-            activeView === 'cheatsheet' || currentTopic !== 'event-loop'
+            activeView === 'cheatsheet' || !isInteractiveTopicReady
               ? 'overflow-y-auto p-6 sm:p-8'
               : 'p-3 sm:p-4 flex flex-col gap-2.5 h-[calc(100vh-61px)]'
           }`}
         >
-          {currentTopic !== 'event-loop' ? (
+          {!isInteractiveTopicReady ? (
             <div className="max-w-5xl mx-auto w-full">
               <TopicRoadmapView
                 topicId={currentTopic}
-                onBackToEventLoop={() => setCurrentTopic('event-loop')}
+                onBackToEventLoop={() => handleSelectTopic('event-loop')}
               />
             </div>
           ) : activeView === 'cheatsheet' ? (
             /* Dedicated Cheatsheet Mode */
             <div className="max-w-5xl mx-auto w-full space-y-6 animate-in fade-in">
-              {/* Header Title & CTA Button */}
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-2">
                 <div>
                   <h1 className="font-serif font-bold text-3xl sm:text-4xl text-[var(--foreground)] tracking-tight">
-                    Microtask vs Macrotask
+                    {isClosuresTopic ? 'Closures & Scope Chain' : 'Microtask vs Macrotask'}
                   </h1>
                   <p className="text-[17px] text-[var(--muted)] mt-1.5 leading-relaxed">
-                    Tài liệu cô đọng để ôn phỏng vấn Front-End: Event Loop chạy việc nào trước, việc nào sau.
+                    {isClosuresTopic
+                      ? 'Tài liệu cô đọng: Cơ chế bộ nhớ Heap, Scope Chain và các bẫy phỏng vấn Closures.'
+                      : 'Tài liệu cô đọng để ôn phỏng vấn Front-End: Event Loop chạy việc nào trước, việc nào sau.'}
                   </p>
                 </div>
 
@@ -142,8 +155,8 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* Cheatsheet Component */}
-              <TaskCheatsheet />
+              {/* Render corresponding Cheatsheet */}
+              {isClosuresTopic ? <ClosureCheatsheet /> : <TaskCheatsheet />}
             </div>
           ) : (
             /* 100% SINGLE-VIEWPORT WORKBENCH (No page scroll needed!) */
@@ -164,7 +177,7 @@ export default function Home() {
 
                 {/* Scenario tabs */}
                 <div className="flex items-center gap-1 p-0.5 rounded-xl bg-[var(--card-subtle)] border border-[var(--border-subtle)] text-[13px]">
-                  {eventLoopScenarios.map((sc, idx) => {
+                  {activeScenarios.map((sc, idx) => {
                     const isActive = idx === selectedScenarioIndex;
                     return (
                       <button
@@ -187,7 +200,6 @@ export default function Home() {
               <div className="flex-1 min-h-0 grid grid-cols-12 gap-3.5 items-stretch">
                 {/* Left Column: Code (Top) + Live Console Terminal (Bottom) */}
                 <div className="col-span-12 lg:col-span-5 flex flex-col gap-3 min-h-0 h-full">
-                  {/* Code Viewer */}
                   <CodeViewer
                     code={scenario.code}
                     activeLines={currentStep.activeCodeLines}
@@ -195,16 +207,14 @@ export default function Home() {
                     className="flex-[3] min-h-[180px]"
                   />
 
-                  {/* Console Terminal: always visible! */}
                   <ConsoleCard
                     logs={currentStep.state.consoleLogs}
                     className="flex-[2] min-h-[140px]"
                   />
                 </div>
 
-                {/* Right Column: Player + Event Loop Stage + Explanation Panel */}
+                {/* Right Column: Player + Stage + Explanation Panel */}
                 <div className="col-span-12 lg:col-span-7 flex flex-col gap-3 min-h-0 h-full">
-                  {/* Player Controller Bar */}
                   <SimulationPlayer
                     currentStep={currentStepIndex}
                     totalSteps={totalSteps}
@@ -219,13 +229,19 @@ export default function Home() {
                     onOpenPredictModal={() => setIsPredictModalOpen(true)}
                   />
 
-                  {/* Visual Event Loop Architecture Diagram */}
-                  <EventLoopDiagramStage
-                    state={currentStep.state}
-                    className="flex-1 min-h-0"
-                  />
+                  {/* Render Visual Stage according to Topic */}
+                  {isClosuresTopic ? (
+                    <ClosureStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  ) : (
+                    <EventLoopDiagramStage
+                      state={currentStep.state as any}
+                      className="flex-1 min-h-0"
+                    />
+                  )}
 
-                  {/* Step Explanation & Interview Tip */}
                   <ExplanationPanel
                     stepIndex={currentStepIndex}
                     totalSteps={totalSteps}
@@ -242,7 +258,7 @@ export default function Home() {
 
       {/* Quiz Modal */}
       <PredictModal
-        scenario={scenario}
+        scenario={scenario as any}
         isOpen={isPredictModalOpen}
         onClose={() => setIsPredictModalOpen(false)}
         onStartSimulation={() => {
