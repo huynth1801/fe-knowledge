@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { SimulationPlayer } from '@/components/visualizer/SimulationPlayer';
@@ -23,25 +23,44 @@ export default function Home() {
   const [isPredictModalOpen, setIsPredictModalOpen] = useState(false);
 
   const scenario = eventLoopScenarios[selectedScenarioIndex];
+  const totalSteps = scenario.steps.length;
   const currentStep = scenario.steps[currentStepIndex];
+
+  // Auto-play interval engine
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    // Interval time based on speed: 1x = 1200ms, 1.5x = 800ms, 2x = 600ms, 0.5x = 2400ms
+    const intervalDuration = Math.round(1200 / playbackSpeed);
+
+    const timer = setInterval(() => {
+      setCurrentStepIndex((prev) => {
+        if (prev >= totalSteps - 1) {
+          setIsPlaying(false);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, intervalDuration);
+
+    return () => clearInterval(timer);
+  }, [isPlaying, playbackSpeed, totalSteps]);
 
   // Actions
   const handleSelectScenario = (index: number) => {
+    setIsPlaying(false);
     setSelectedScenarioIndex(index);
     setCurrentStepIndex(0);
-    setIsPlaying(false);
   };
 
   const handleStepNext = () => {
-    if (currentStepIndex < scenario.steps.length - 1) {
-      setCurrentStepIndex((prev) => prev + 1);
-    }
+    setIsPlaying(false);
+    setCurrentStepIndex((prev) => Math.min(prev + 1, totalSteps - 1));
   };
 
   const handleStepPrev = () => {
-    if (currentStepIndex > 0) {
-      setCurrentStepIndex((prev) => prev - 1);
-    }
+    setIsPlaying(false);
+    setCurrentStepIndex((prev) => Math.max(prev - 1, 0));
   };
 
   const handleReset = () => {
@@ -55,7 +74,7 @@ export default function Home() {
   };
 
   const handlePlayToggle = () => {
-    if (currentStepIndex === scenario.steps.length - 1) {
+    if (currentStepIndex >= totalSteps - 1) {
       setCurrentStepIndex(0);
       setIsPlaying(true);
     } else {
@@ -76,7 +95,10 @@ export default function Home() {
         {/* Left Navigation Sidebar */}
         <Sidebar
           currentTopic={currentTopic}
-          onSelectTopic={(id) => setCurrentTopic(id)}
+          onSelectTopic={(id) => {
+            setIsPlaying(false);
+            setCurrentTopic(id);
+          }}
         />
 
         {/* Main Content Workspace */}
@@ -120,7 +142,7 @@ export default function Home() {
                       <button
                         key={sc.id}
                         onClick={() => handleSelectScenario(idx)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 border ${
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-2 border cursor-pointer ${
                           isActive
                             ? 'bg-[var(--card)] border-[var(--accent)] text-[var(--accent)] font-semibold shadow-xs'
                             : 'bg-[var(--card-subtle)] border-[var(--border-subtle)] text-[var(--muted)] hover:text-[var(--foreground)]'
@@ -139,7 +161,7 @@ export default function Home() {
               {/* Player Controller Bar */}
               <SimulationPlayer
                 currentStep={currentStepIndex}
-                totalSteps={scenario.steps.length}
+                totalSteps={totalSteps}
                 isPlaying={isPlaying}
                 playbackSpeed={playbackSpeed}
                 onPlayToggle={handlePlayToggle}
@@ -175,7 +197,7 @@ export default function Home() {
                 <div className="lg:col-span-7 space-y-4">
                   <ExplanationPanel
                     stepIndex={currentStepIndex}
-                    totalSteps={scenario.steps.length}
+                    totalSteps={totalSteps}
                     title={currentStep.title}
                     explanation={currentStep.explanation}
                     interviewInsight={currentStep.interviewInsight}
@@ -195,8 +217,8 @@ export default function Home() {
         isOpen={isPredictModalOpen}
         onClose={() => setIsPredictModalOpen(false)}
         onStartSimulation={() => {
-          handleReset();
-          handlePlayToggle();
+          setCurrentStepIndex(0);
+          setIsPlaying(true);
         }}
       />
     </div>

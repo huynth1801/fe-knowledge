@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import { Play, Pause, SkipBack, SkipForward, RotateCcw, FastForward, HelpCircle } from 'lucide-react';
+import React from 'react';
+import { Play, Pause, SkipBack, SkipForward, RotateCcw, HelpCircle, Activity } from 'lucide-react';
 
 interface SimulationPlayerProps {
   currentStep: number;
   totalSteps: number;
   isPlaying: boolean;
-  playbackSpeed: number; // 0.5, 1, 2
+  playbackSpeed: number; // 0.5, 1, 1.5, 2
   onPlayToggle: () => void;
   onStepNext: () => void;
   onStepPrev: () => void;
@@ -33,23 +33,6 @@ export function SimulationPlayer({
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === totalSteps - 1;
 
-  // Auto-play timer
-  useEffect(() => {
-    if (!isPlaying) return;
-
-    if (isLastStep) {
-      onPlayToggle(); // auto stop at the end
-      return;
-    }
-
-    const intervalTime = Math.max(600, Math.floor(1800 / playbackSpeed));
-    const timer = setTimeout(() => {
-      onStepNext();
-    }, intervalTime);
-
-    return () => clearTimeout(timer);
-  }, [isPlaying, currentStep, isLastStep, playbackSpeed, onStepNext, onPlayToggle]);
-
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 sm:p-4 shadow-xs">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -74,9 +57,9 @@ export function SimulationPlayer({
 
           <button
             onClick={onPlayToggle}
-            className={`px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-xs ${
+            className={`px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-semibold transition-all shadow-xs cursor-pointer ${
               isPlaying
-                ? 'bg-amber-600 hover:bg-amber-700 text-white animate-pulse'
+                ? 'bg-amber-600 hover:bg-amber-700 text-white ring-2 ring-amber-300 ring-offset-1'
                 : 'bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white'
             }`}
           >
@@ -88,7 +71,7 @@ export function SimulationPlayer({
             ) : (
               <>
                 <Play className="w-4 h-4 fill-white" />
-                <span>{isLastStep ? 'Chạy lại' : 'Tự động chạy'}</span>
+                <span>{isLastStep ? 'Chạy lại từ đầu' : 'Tự động chạy'}</span>
               </>
             )}
           </button>
@@ -104,7 +87,7 @@ export function SimulationPlayer({
 
           {/* Speed Selector */}
           <div className="flex items-center ml-2 border border-[var(--border)] rounded-lg p-0.5 bg-[var(--card-subtle)] text-xs font-mono">
-            {[0.5, 1, 2].map((speed) => (
+            {[0.5, 1, 1.5, 2].map((speed) => (
               <button
                 key={speed}
                 onClick={() => onChangeSpeed(speed)}
@@ -118,6 +101,14 @@ export function SimulationPlayer({
               </button>
             ))}
           </div>
+
+          {/* Live Playing Status indicator */}
+          {isPlaying && (
+            <div className="hidden sm:flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-mono animate-pulse">
+              <Activity className="w-3.5 h-3.5 text-amber-600" />
+              <span>Đang phát...</span>
+            </div>
+          )}
         </div>
 
         {/* Step indicator & Quiz trigger */}
@@ -125,7 +116,7 @@ export function SimulationPlayer({
           {onOpenPredictModal && (
             <button
               onClick={onOpenPredictModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-light)] text-[var(--accent)] text-xs font-medium hover:bg-[var(--accent-light)]/80 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-light)] text-[var(--accent)] text-xs font-medium hover:bg-[var(--accent-light)]/80 transition-colors cursor-pointer"
             >
               <HelpCircle className="w-3.5 h-3.5" />
               <span>Đoán Output (Quiz)</span>
@@ -153,7 +144,7 @@ export function SimulationPlayer({
                 key={idx}
                 onClick={() => onSelectStep(idx)}
                 title={`Nhảy tới bước ${idx + 1}`}
-                className="group relative flex-1 h-3 py-1 focus:outline-hidden"
+                className="group relative flex-1 h-3 py-1 focus:outline-hidden cursor-pointer"
               >
                 <div
                   className={`h-1.5 rounded-full transition-all ${
