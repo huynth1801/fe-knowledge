@@ -81,6 +81,16 @@ export const curriculumCategories: TopicCategory[] = [
     description: 'CORS, Preflight, phòng thủ XSS/CSRF, Cookie bảo mật và HTTP Caching',
     topics: [
       {
+        id: 'web-security-csp-auth',
+        title: 'Web Security, CSP & Auth Architecture',
+        subtitle: 'Content Security Policy (Nonce/Hash), SameSite Cookies, XSS & Token Storage',
+        level: 'Senior',
+        isReady: true,
+        hasSimulation: false,
+        estimatedMinutes: 15,
+        badge: 'Bảo mật Production',
+      },
+      {
         id: 'cors-security',
         title: 'CORS, Preflight & Web Security',
         subtitle: 'OPTIONS Request, SameSite Cookies, XSS & CSRF Defense',
@@ -238,6 +248,16 @@ export const curriculumCategories: TopicCategory[] = [
         hasSimulation: false,
         estimatedMinutes: 12,
         badge: 'DevOps cho FE',
+      },
+      {
+        id: 'aws-cloudflare-deployments',
+        title: 'AWS S3/CloudFront & Cloudflare Edge',
+        subtitle: 'SPA 404 Routing, S3 OAC, Cache Invalidation, Docker ECS & Edge Workers',
+        level: 'Senior',
+        isReady: true,
+        hasSimulation: false,
+        estimatedMinutes: 15,
+        badge: 'Hạ tầng Cloud',
       },
     ],
   },

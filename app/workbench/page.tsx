@@ -29,6 +29,8 @@ import { ReactRerenderCheatsheet } from '@/components/visualizer/react/ReactRere
 import { HttpCacheCheatsheet } from '@/components/visualizer/cache/HttpCacheCheatsheet';
 import { StateManagementCheatsheet } from '@/components/visualizer/state/StateManagementCheatsheet';
 import { CiCdCheatsheet } from '@/components/visualizer/cicd/CiCdCheatsheet';
+import { AwsCloudflareCheatsheet } from '@/components/visualizer/cicd/AwsCloudflareCheatsheet';
+import { WebSecurityCheatsheet } from '@/components/visualizer/security/WebSecurityCheatsheet';
 import { BundleOptimizationCheatsheet } from '@/components/visualizer/perf/BundleOptimizationCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
 import { ExplanationPanel } from '@/components/visualizer/ExplanationPanel';
@@ -96,6 +98,8 @@ function WorkbenchContent() {
   const isStateMgmtTopic = currentTopic === 'state-management';
   const isHttpCacheTopic = currentTopic === 'http-cache';
   const isCiCdTopic = currentTopic === 'cicd-github-actions';
+  const isAwsCloudflareTopic = currentTopic === 'aws-cloudflare-deployments';
+  const isSecurityTopic = currentTopic === 'web-security-csp-auth';
   const isTestingTopic = currentTopic === 'testing-visual-regression';
   const isRealtimeTopic = currentTopic === 'websocket-realtime';
   const isDesignTopic = currentTopic === 'design-tokens';
@@ -243,6 +247,10 @@ function WorkbenchContent() {
               {/* Render corresponding Cheatsheet */}
               {currentTopic === 'event-loop' ? (
                 <TaskCheatsheet />
+              ) : isAwsCloudflareTopic ? (
+                <AwsCloudflareCheatsheet />
+              ) : isSecurityTopic ? (
+                <WebSecurityCheatsheet />
               ) : isPrototypeTopic ? (
                 <PrototypeCheatsheet />
               ) : isRerenderTopic ? (

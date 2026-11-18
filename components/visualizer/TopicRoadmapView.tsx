@@ -72,6 +72,22 @@ const topicDetails: Record<
     interviewPoints: [],
     visualMockupDesc: '',
   },
+  'aws-cloudflare-deployments': {
+    title: 'AWS S3/CloudFront & Cloudflare Edge Deployments',
+    subtitle: 'SPA 404 Routing, OAC Security, Invalidation & Edge Caching',
+    icon: <Globe className="w-6 h-6 text-[#CC6745]" />,
+    description: 'Đã sẵn sàng hoạt động trong sổ tay chuyên sâu.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
+  'web-security-csp-auth': {
+    title: 'Web Security, CSP & Auth Architecture',
+    subtitle: 'CSP Nonce/Hash, SameSite Cookies & Bank-grade Token Storage',
+    icon: <CheckSquare className="w-6 h-6 text-emerald-600" />,
+    description: 'Đã sẵn sàng hoạt động trong sổ tay chuyên sâu.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
   'bundle-optimization': {
     title: 'Tree Shaking & Lazy Loading',
     subtitle: 'ES Modules Static Analysis & Code Splitting',

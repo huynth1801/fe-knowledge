@@ -105,6 +105,33 @@ const topicsData: TopicItem[] = [
     codeSnippet: `// Atomic selector avoids re-render blast radius\nconst count = useStore((s) => s.count);`,
     keyInsight: 'Over 80% of application state is remote Server State that belongs in an HTTP cache, not Redux.',
   },
+  {
+    id: 'cicd-github-actions',
+    index: '11',
+    title: 'CI/CD Pipelines & GitHub Actions',
+    count: 'Production Gates',
+    desc: 'Quality gates on PRs, linting, typechecking, Vitest testing, and Docker standalone container builds.',
+    codeSnippet: `// .github/workflows/ci.yml\n- uses: actions/setup-node@v4\n  with: { cache: 'pnpm' }`,
+    keyInsight: 'Catching type errors and bundle size regression in CI prevents 95% of production bugs.',
+  },
+  {
+    id: 'aws-cloudflare-deployments',
+    index: '12',
+    title: 'AWS S3/CloudFront & Cloudflare Edge',
+    count: 'Cloud & CDN',
+    desc: 'SPA 404 Error Document routing, Origin Access Control (OAC), cache invalidation, and Edge Workers.',
+    codeSnippet: `// CloudFront Custom Error Response:\n404 Not Found -> /index.html (200 OK)`,
+    keyInsight: 'Hashed assets (assets/*.js) are immutable for 1 year; only index.html needs cache invalidation on deploy.',
+  },
+  {
+    id: 'web-security-csp-auth',
+    index: '13',
+    title: 'Web Security, CSP & Auth Architecture',
+    count: 'Bank-Grade Defense',
+    desc: 'Content Security Policy (CSP Nonce), HttpOnly + SameSite=Lax cookies, and XSS/CSRF mitigation.',
+    codeSnippet: `Content-Security-Policy:\nscript-src 'self' 'nonce-rAnd0m';`,
+    keyInsight: 'Storing JWT tokens in LocalStorage leaves your users vulnerable to single-line XSS theft.',
+  },
 ];
 
 export function TopicsListSection() {
@@ -119,7 +146,7 @@ export function TopicsListSection() {
             Curriculum
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[var(--text)] tracking-tight">
-            10 core frontend topics. All with runnable simulations.
+            13 core frontend topics. All with runnable simulations &amp; guides.
           </h2>
           <p className="text-base text-[var(--text-muted)] leading-relaxed">
             Hover or tap any topic to inspect code snippets and core mental models. Click to launch full interactive environments.
