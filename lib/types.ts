@@ -19,7 +19,8 @@ export type TopicId =
   | 'testing-visual-regression'
   | 'cicd-github-actions'
   | 'aws-cloudflare-deployments'
-  | 'web-security-csp-auth';
+  | 'web-security-csp-auth'
+  | 'vps-deploy-nginx-pm2';
 
 export interface TopicCategory {
   id: string;

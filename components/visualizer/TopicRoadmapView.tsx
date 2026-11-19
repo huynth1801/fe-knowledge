@@ -88,6 +88,14 @@ const topicDetails: Record<
     interviewPoints: [],
     visualMockupDesc: '',
   },
+  'vps-deploy-nginx-pm2': {
+    title: 'Deploy trên VPS: Linux, Nginx, PM2 & CI/CD',
+    subtitle: 'Ubuntu Hardening, Nginx Reverse Proxy, PM2 Cluster Zero-Downtime, Swap & SSH Deploy',
+    icon: <Globe className="w-6 h-6 text-[#CC6745]" />,
+    description: 'Đã sẵn sàng hoạt động trong sổ tay chuyên sâu.',
+    interviewPoints: [],
+    visualMockupDesc: '',
+  },
   'bundle-optimization': {
     title: 'Tree Shaking & Lazy Loading',
     subtitle: 'ES Modules Static Analysis & Code Splitting',

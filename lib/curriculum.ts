@@ -259,6 +259,16 @@ export const curriculumCategories: TopicCategory[] = [
         estimatedMinutes: 15,
         badge: 'Hạ tầng Cloud',
       },
+      {
+        id: 'vps-deploy-nginx-pm2',
+        title: 'Deploy trên VPS: Linux, Nginx, PM2 & CI/CD',
+        subtitle: 'Ubuntu Hardening, Nginx Reverse Proxy, PM2 Cluster Zero-Downtime, Swap & SSH Deploy',
+        level: 'Senior',
+        isReady: true,
+        hasSimulation: false,
+        estimatedMinutes: 15,
+        badge: 'Thực chiến VPS Linux',
+      },
     ],
   },
 ];

@@ -132,6 +132,15 @@ const topicsData: TopicItem[] = [
     codeSnippet: `Content-Security-Policy:\nscript-src 'self' 'nonce-rAnd0m';`,
     keyInsight: 'Storing JWT tokens in LocalStorage leaves your users vulnerable to single-line XSS theft.',
   },
+  {
+    id: 'vps-deploy-nginx-pm2',
+    index: '14',
+    title: 'Deploy trên VPS: Linux, Nginx, PM2 & CI/CD',
+    count: 'Thực chiến Linux',
+    desc: 'Cấu hình Nginx reverse proxy, PM2 cluster zero-downtime, swap RAM ảo và GitHub Actions SSH deploy.',
+    codeSnippet: `pm2 reload ecosystem.config.js --update-env\nproxy_pass http://127.0.0.1:3000;`,
+    keyInsight: 'Build trên runner GitHub 7GB RAM rồi rsync sang VPS giúp server 1GB RAM không bao giờ bị crash OOM.',
+  },
 ];
 
 export function TopicsListSection() {
@@ -146,7 +155,7 @@ export function TopicsListSection() {
             Curriculum
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[var(--text)] tracking-tight">
-            13 core frontend topics. All with runnable simulations &amp; guides.
+            14 core frontend topics. All with runnable simulations &amp; guides.
           </h2>
           <p className="text-base text-[var(--text-muted)] leading-relaxed">
             Hover or tap any topic to inspect code snippets and core mental models. Click to launch full interactive environments.

@@ -30,6 +30,7 @@ import { HttpCacheCheatsheet } from '@/components/visualizer/cache/HttpCacheChea
 import { StateManagementCheatsheet } from '@/components/visualizer/state/StateManagementCheatsheet';
 import { CiCdCheatsheet } from '@/components/visualizer/cicd/CiCdCheatsheet';
 import { AwsCloudflareCheatsheet } from '@/components/visualizer/cicd/AwsCloudflareCheatsheet';
+import { VpsDeploymentCheatsheet } from '@/components/visualizer/cicd/VpsDeploymentCheatsheet';
 import { WebSecurityCheatsheet } from '@/components/visualizer/security/WebSecurityCheatsheet';
 import { BundleOptimizationCheatsheet } from '@/components/visualizer/perf/BundleOptimizationCheatsheet';
 import { CodeViewer } from '@/components/visualizer/CodeViewer';
@@ -99,6 +100,7 @@ function WorkbenchContent() {
   const isHttpCacheTopic = currentTopic === 'http-cache';
   const isCiCdTopic = currentTopic === 'cicd-github-actions';
   const isAwsCloudflareTopic = currentTopic === 'aws-cloudflare-deployments';
+  const isVpsTopic = currentTopic === 'vps-deploy-nginx-pm2';
   const isSecurityTopic = currentTopic === 'web-security-csp-auth';
   const isTestingTopic = currentTopic === 'testing-visual-regression';
   const isRealtimeTopic = currentTopic === 'websocket-realtime';
@@ -249,6 +251,8 @@ function WorkbenchContent() {
                 <TaskCheatsheet />
               ) : isAwsCloudflareTopic ? (
                 <AwsCloudflareCheatsheet />
+              ) : isVpsTopic ? (
+                <VpsDeploymentCheatsheet />
               ) : isSecurityTopic ? (
                 <WebSecurityCheatsheet />
               ) : isPrototypeTopic ? (
