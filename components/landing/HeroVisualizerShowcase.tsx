@@ -48,7 +48,7 @@ export function HeroVisualizerShowcase() {
       onClick={() => setHasInteracted(true)}
     >
       {/* Tab Navigation Bar */}
-      <div className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg-subtle)] px-3 py-2 overflow-x-auto select-none">
+      <div className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg-subtle)] px-2 sm:px-3 py-2 overflow-x-auto select-none no-scrollbar">
         <div className="flex items-center gap-1.5 min-w-max" role="tablist" aria-label="Visualizer Demos">
           <button
             role="tab"
@@ -186,7 +186,7 @@ function EventLoopMini() {
   return (
     <div className="space-y-4">
       {/* Step controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
         <div>
           <span className="text-[11px] font-mono text-[var(--accent)] font-semibold uppercase">
             Step {step + 1} of {steps.length}
@@ -317,7 +317,7 @@ function ReconciliationMini() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
         <div>
           <span className="text-[11px] font-mono text-[var(--accent)] font-semibold uppercase">
             React Reconciliation & Blast Radius
@@ -327,7 +327,7 @@ function ReconciliationMini() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-1.5 text-xs font-mono text-[var(--text-muted)] cursor-pointer">
             <input
               type="checkbox"
@@ -413,7 +413,7 @@ function FlexboxMini() {
   return (
     <div className="space-y-4">
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
         <div>
           <span className="text-[11px] font-mono text-[var(--accent)] font-semibold uppercase">
             CSS Flexbox Layout Engine
@@ -423,14 +423,14 @@ function FlexboxMini() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded border border-[var(--border)]">
-            <span className="text-[var(--text-muted)] px-1">justify:</span>
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono max-w-full">
+          <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded border border-[var(--border)] overflow-x-auto max-w-full">
+            <span className="text-[var(--text-muted)] px-1 shrink-0">justify:</span>
             {(['flex-start', 'center', 'space-between', 'flex-end'] as const).map((val) => (
               <button
                 key={val}
                 onClick={() => setJustify(val)}
-                className={`px-2 py-0.5 rounded cursor-pointer ${
+                className={`px-2 py-0.5 rounded cursor-pointer shrink-0 ${
                   justify === val
                     ? 'bg-[var(--bg-card)] text-[var(--accent)] font-bold shadow-2xs border border-[var(--border)]'
                     : 'text-[var(--text-muted)] hover:text-[var(--text)]'
@@ -441,13 +441,13 @@ function FlexboxMini() {
             ))}
           </div>
 
-          <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded border border-[var(--border)]">
-            <span className="text-[var(--text-muted)] px-1">align:</span>
+          <div className="flex items-center gap-1 bg-[var(--bg-subtle)] p-1 rounded border border-[var(--border)] overflow-x-auto max-w-full">
+            <span className="text-[var(--text-muted)] px-1 shrink-0">align:</span>
             {(['flex-start', 'center', 'flex-end'] as const).map((val) => (
               <button
                 key={val}
                 onClick={() => setAlign(val)}
-                className={`px-2 py-0.5 rounded cursor-pointer ${
+                className={`px-2 py-0.5 rounded cursor-pointer shrink-0 ${
                   align === val
                     ? 'bg-[var(--bg-card)] text-[var(--accent)] font-bold shadow-2xs border border-[var(--border)]'
                     : 'text-[var(--text-muted)] hover:text-[var(--text)]'
@@ -480,9 +480,9 @@ function FlexboxMini() {
       </div>
 
       {/* Generated CSS */}
-      <div className="p-2.5 rounded bg-[var(--bg-subtle)] border border-[var(--border)] font-mono text-xs text-[var(--text-muted)] flex items-center justify-between">
+      <div className="p-2.5 rounded bg-[var(--bg-subtle)] border border-[var(--border)] font-mono text-xs text-[var(--text-muted)] flex flex-col sm:flex-row sm:items-center justify-between gap-1">
         <span>Computed CSS:</span>
-        <code className="text-[var(--text)] font-semibold">
+        <code className="text-[var(--text)] font-semibold break-all text-[11px] sm:text-xs">
           display: flex; justify-content: {justify}; align-items: {align};
         </code>
       </div>
@@ -498,7 +498,7 @@ function ClosureMini() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border)]">
         <div>
           <span className="text-[11px] font-mono text-[var(--accent)] font-semibold uppercase">
             Lexical Environment & Closure Scope Chain
@@ -508,7 +508,7 @@ function ClosureMini() {
           </p>
         </div>
 
-        <div className="flex items-center gap-1.5 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-1.5 text-xs font-mono">
           <span className="text-[var(--text-muted)] mr-1">Trace variable:</span>
           {(['count', 'globalConfig', 'secret'] as const).map((v) => (
             <button

@@ -26,7 +26,7 @@ export function ReactFiberStage({ state, className = '' }: ReactFiberStageProps)
       className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3.5 flex flex-col justify-between shadow-xs select-none overflow-hidden ${className}`}
     >
       {/* Top Bar: Title & Phase Pill */}
-      <div className="flex items-center justify-between pb-2.5 border-b border-[var(--border-subtle)] shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[var(--border-subtle)] shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-600 animate-pulse" />
           <h2 className="font-serif font-bold text-[15px] sm:text-[16px] text-[var(--foreground)] tracking-tight">
@@ -35,7 +35,7 @@ export function ReactFiberStage({ state, className = '' }: ReactFiberStageProps)
         </div>
 
         {/* Phase Pill */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 self-start sm:self-auto">
           <span className="text-[12px] text-[var(--muted)] hidden sm:inline">Pha điều phối:</span>
           <span
             className={`px-2.5 py-0.5 rounded-full text-[12px] font-mono font-bold tracking-tight border ${

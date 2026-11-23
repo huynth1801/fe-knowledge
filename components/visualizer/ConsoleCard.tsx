@@ -22,15 +22,15 @@ export function ConsoleCard({ logs, className = '' }: ConsoleCardProps) {
     <div
       className={`rounded-2xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-xs flex flex-col ${className}`}
     >
-      <div className="px-4 py-2 bg-[var(--card-subtle)] border-b border-[var(--border-subtle)] flex items-center justify-between shrink-0">
-        <div className="flex items-center gap-1.5">
-          <Terminal className="w-4 h-4 text-[var(--accent)]" />
-          <span className="text-[13px] font-mono font-medium text-[var(--foreground)]">
-            Console Terminal (Output thời gian thực)
+      <div className="px-3 sm:px-4 py-2 bg-[var(--card-subtle)] border-b border-[var(--border-subtle)] flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <Terminal className="w-4 h-4 text-[var(--accent)] shrink-0" />
+          <span className="text-[12px] sm:text-[13px] font-mono font-medium text-[var(--foreground)] truncate">
+            Console Terminal (Output)
           </span>
         </div>
-        <span className="text-[12px] font-mono text-[var(--muted)]">
-          {logs.length} dòng log
+        <span className="text-[11px] sm:text-[12px] font-mono text-[var(--muted)] shrink-0">
+          {logs.length} logs
         </span>
       </div>
 

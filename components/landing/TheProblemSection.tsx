@@ -92,9 +92,52 @@ export function TheProblemSection() {
           </div>
         </div>
 
-        {/* Comparison Table */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-x-auto shadow-2xs">
-          <table className="w-full text-left border-collapse text-xs sm:text-sm">
+        {/* Comparison: Mobile Card View (< sm) */}
+        <div className="sm:hidden space-y-3.5">
+          {[
+            {
+              metric: 'Learning input',
+              traditional: 'Passive text articles, bullet-point cheat sheets, or 40-minute video lectures.',
+              feVisualizer: 'Direct browser engine simulation. You push call frames and drain queues yourself.',
+            },
+            {
+              metric: 'Mental model depth',
+              traditional: 'Abstract verbal analogies that crumble when an interviewer asks an edge case.',
+              feVisualizer: 'Concrete visual mechanics. You know exactly what happens at line 14 at tick 3.',
+            },
+            {
+              metric: 'Verification',
+              traditional: 'Rereading highlights and assuming you understand the concept.',
+              feVisualizer: 'Predict-then-run quizzes. Guess the exact console output before watching it execute.',
+            },
+            {
+              metric: 'Interview recall',
+              traditional: 'Stumbling through memorized definitions while trying to solve live coding bugs.',
+              feVisualizer: 'Instant visual recall. You picture the heap closure or fiber tree immediately.',
+            },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] space-y-2.5 shadow-2xs"
+            >
+              <div className="font-mono text-xs font-bold text-[var(--accent)] uppercase tracking-wide">
+                {item.metric}
+              </div>
+              <div className="p-2.5 rounded bg-[var(--bg-subtle)] space-y-1">
+                <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase">How people usually review</span>
+                <p className="text-xs text-[var(--text-muted)] leading-relaxed">{item.traditional}</p>
+              </div>
+              <div className="p-2.5 rounded bg-[var(--accent-subtle)] border border-[var(--accent-border)] space-y-1">
+                <span className="text-[10px] font-mono font-bold text-[var(--accent)] uppercase">How FE Visualizer works</span>
+                <p className="text-xs text-[var(--text)] font-medium leading-relaxed">{item.feVisualizer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Comparison Table (Desktop: sm+) */}
+        <div className="hidden sm:block rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-x-auto shadow-2xs">
+          <table className="w-full min-w-[580px] text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="border-b border-[var(--border)] bg-[var(--bg-subtle)] font-mono text-[var(--text)]">
                 <th className="py-3 px-4 sm:px-6 w-1/4">Evaluation metric</th>
